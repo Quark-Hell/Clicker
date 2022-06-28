@@ -2,21 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public struct PosForSpawn
-{
-    public Vector3 Position;
-    public float DelayTimer;
-    public float Delay;
-
-    public PosForSpawn(Vector3 position, float delay)
-    {
-        Position = position;
-        DelayTimer = delay;
-        Delay = delay;
-    }
-}
-
 public class SpawnManager : MonoBehaviour
 {
     public float Difficulty;
@@ -26,23 +11,30 @@ public class SpawnManager : MonoBehaviour
     public float SpawnDelay;
     private float TimeRemaining;
 
-    //[HideInInspector]
-    public List<PosForSpawn> PositionForSpawn;
-    private List<PosForSpawn> FreeForSpawn;
+    public List<List<Vector3>> PosForSpawn;
+    public List<List<Vector3>> FreePosForSpawn;
 
     [SerializeField]
-    private GameObject StorageOfPos;
+    private List<GameObject> StorageOfPos;
 
     public List<GameObject> Enemy;
 
     void Start()
     {
+        PosForSpawn = new List<List<Vector3>>();
+        FreePosForSpawn = new List<List<Vector3>>();
+
         //Initialize list with pos for spawn
-        for (byte i = 0; i < StorageOfPos.transform.childCount; i++)
+        for (byte i = 0; i < StorageOfPos.Count; i++)
         {
-            PositionForSpawn.Add(new PosForSpawn(StorageOfPos.transform.GetChild(i).transform.position, 5));
+            PosForSpawn.Add(new List<Vector3>());
+
+            for (byte k = 0; k < StorageOfPos[i].transform.childCount; k++)
+            {
+                PosForSpawn[i].Add(StorageOfPos[i].transform.GetChild(i).transform.position);
+            }
         }
-        FreeForSpawn = PositionForSpawn;
+        FreePosForSpawn = PosForSpawn;
 
         //Initialize timer
         TimeRemaining = SpawnDelay;
@@ -62,9 +54,16 @@ public class SpawnManager : MonoBehaviour
         }
         else
         {
-            int randPos = Random.Range(0, FreeForSpawn.Count);
-            Instantiate(Enemy[0], FreeForSpawn[randPos].Position, Quaternion.identity);
+            #region Spawn Enemy
+            int randEnemy = Random.Range(0, Enemy.Count);
+            int randPos = Random.Range(0, FreePosForSpawn[randEnemy].Count);
+            Instantiate(Enemy[randEnemy], FreePosForSpawn[randEnemy][randPos], Quaternion.identity);
+            #endregion
 
+            //Deleting point from list of available for spawning
+            FreePosForSpawn[randEnemy].RemoveAt(randPos);
+
+            //Restart timer
             TimeRemaining = SpawnDelay;
             return true;
         }
