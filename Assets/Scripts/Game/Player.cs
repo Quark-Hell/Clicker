@@ -10,6 +10,10 @@ public class Player : MonoBehaviour
     public float SpeedOfRotate;
 
     public GameObject Gun;
+    [Range(0, 1)]
+    public float SpeedOfLookingGun;
+    [Range(0, 100)]
+    public float WeaponRecoilStrong = 5;
 
     [Range(0, 10)]
     public float MaxDistanceFromCenter;
@@ -25,15 +29,31 @@ public class Player : MonoBehaviour
     void Update()
     {
         AimGun();
+        Shoot();
     }
 
     void Shoot()
     {
-        //float WeaponRecoilStrong = 5;
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            Gun.transform.eulerAngles = new Vector3(
+                Gun.transform.eulerAngles.x - WeaponRecoilStrong,
+                Gun.transform.eulerAngles.y,
+                Gun.transform.eulerAngles.z);
+        }
+#if UNITY_EDITOR
+        if (Input.GetMouseButtonDown(0))
+        {
+            Gun.transform.eulerAngles = new Vector3(
+                Gun.transform.eulerAngles.x - WeaponRecoilStrong,
+                Gun.transform.eulerAngles.y,
+                Gun.transform.eulerAngles.z);
+        }
+#endif
     }
 
     Plane plane = new Plane(Vector3.up, 0);
-     void AimGun()
+    void AimGun()
     {
         Ray ray;
         float distance = 1000;
@@ -42,7 +62,11 @@ public class Player : MonoBehaviour
         if (plane.Raycast(ray, out distance))
         {
             Vector3 forward = ray.GetPoint(distance) - Gun.transform.position;
-            Gun.transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
+            Gun.transform.rotation = Quaternion.Lerp(Gun.transform.rotation, Quaternion.LookRotation(forward, Vector3.up), SpeedOfLookingGun);
+            Gun.transform.eulerAngles = new Vector3(
+                Gun.transform.eulerAngles.x,
+                Gun.transform.eulerAngles.y,
+                0);
         }
     }
 
