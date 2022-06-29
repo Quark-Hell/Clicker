@@ -45,6 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Ways: []
+  MovingDelay: 0
+  MovingSpeed: 0
+  TiltDisplacement: 0
+  TiltSpeed: 0
+  AIMesh: {fileID: 6313634317786396830}
+  spawnManger: {fileID: 0}
+  IndexTypesOfEnemy: 0
 --- !u!1 &6799380041333529102
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,16 +11,19 @@ public struct DestinationDots
 
 public class AI : MonoBehaviour
 {
-    public List<DestinationDots> Ways;
-    public float MovingDelay;
+
+    [SerializeField] private List<DestinationDots> Ways;
+    [SerializeField] private float MovingDelay;
 
     [Range(0, 50)]
-    public float MovingSpeed;
+    [SerializeField] private float MovingSpeed;
 
     [Range(0, 30)]
-    public float TiltDisplacement;
+    [SerializeField] private float TiltDisplacement;
     [Range(0, 30)]
-    public float TiltSpeed;
+    [SerializeField] private float TiltSpeed;
+
+    [SerializeField] private GameObject AIMesh;
 
     private float MovingDelayTimer;
 
@@ -118,15 +121,14 @@ public class AI : MonoBehaviour
         }
     }
 
-    private float Side = 1;
     private float minimum, maximum;
     private float _timePassed;
     void TiltPingPong()
     {
         _timePassed += Time.deltaTime;
-        float t = Mathf.PingPong(_timePassed * TiltSpeed, maximum - minimum) + minimum;
+        float side = Mathf.PingPong(_timePassed * TiltSpeed, maximum - minimum) + minimum;
 
-        transform.localEulerAngles = new Vector3(t * Side, 0 , 0);
+        AIMesh.transform.localEulerAngles = new Vector3(side, 0 , 0);
     }
 
     void OnDrawGizmos()

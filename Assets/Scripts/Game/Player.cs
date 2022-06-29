@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     public float SpeedOfLookingGun;
     [Range(0, 100)]
     public float WeaponRecoilStrong = 5;
+    [Range(0, 100)]
+    public float Damage;
 
     [Range(0, 10)]
     public float MaxDistanceFromCenter;
@@ -34,12 +36,28 @@ public class Player : MonoBehaviour
 
     void Shoot()
     {
+        RaycastHit hit;
+        Ray ray;
+        float distance = 1000;
+        int layerMask = 1 << 6;
+
+  
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
+            //Recoil
             Gun.transform.eulerAngles = new Vector3(
                 Gun.transform.eulerAngles.x - WeaponRecoilStrong,
                 Gun.transform.eulerAngles.y,
                 Gun.transform.eulerAngles.z);
+
+            //Hit
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, distance, layerMask))
+            {
+                hit.transform.parent.parent.GetComponent<EnemyProfile>().CurrentHP -= Damage;
+                hit.transform.parent.parent.GetComponent<EnemyProfile>().elapsed = 0;
+            }
         }
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
@@ -48,6 +66,15 @@ public class Player : MonoBehaviour
                 Gun.transform.eulerAngles.x - WeaponRecoilStrong,
                 Gun.transform.eulerAngles.y,
                 Gun.transform.eulerAngles.z);
+
+            //Hit
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, distance, layerMask))
+            {
+                hit.transform.parent.parent.GetComponent<EnemyProfile>().CurrentHP -= Damage;
+                hit.transform.parent.parent.GetComponent<EnemyProfile>().elapsed = 0;
+            }
         }
 #endif
     }
