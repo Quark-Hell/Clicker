@@ -14,8 +14,13 @@ public class AI : MonoBehaviour
     public List<DestinationDots> Ways;
     public float MovingDelay;
 
-    [Range(0,50)]
+    [Range(0, 50)]
     public float MovingSpeed;
+
+    [Range(0, 30)]
+    public float TiltDisplacement;
+    [Range(0, 30)]
+    public float TiltSpeed;
 
     private float MovingDelayTimer;
 
@@ -37,6 +42,9 @@ public class AI : MonoBehaviour
         FindingIndexOfSpawnPointInGeneralList();
 
         MovingDelayTimer = MovingDelay;
+
+        minimum = -TiltDisplacement;
+        maximum = TiltDisplacement;
     }
 
     bool FindingIndexOfSpawnPointInGeneralList()
@@ -58,6 +66,7 @@ public class AI : MonoBehaviour
 
         CheckPosition();
         Moving();
+        TiltPingPong();
     }
 
     bool CheckPosition()
@@ -109,6 +118,17 @@ public class AI : MonoBehaviour
         }
     }
 
+    private float Side = 1;
+    private float minimum, maximum;
+    private float _timePassed;
+    void TiltPingPong()
+    {
+        _timePassed += Time.deltaTime;
+        float t = Mathf.PingPong(_timePassed * TiltSpeed, maximum - minimum) + minimum;
+
+        transform.localEulerAngles = new Vector3(t * Side, 0 , 0);
+    }
+
     void OnDrawGizmos()
     {
         for (byte i = 0; i < Ways.Count; i++)
@@ -121,4 +141,5 @@ public class AI : MonoBehaviour
             }
         }
     }
+
 }

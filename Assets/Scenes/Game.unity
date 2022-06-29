@@ -1052,6 +1052,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6011161968088893377, guid: a22550e9dd649544697d29e4e5eb0327, type: 3}
+      propertyPath: TiltForce
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6011161968088893377, guid: a22550e9dd649544697d29e4e5eb0327, type: 3}
+      propertyPath: TiltSpeed
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6011161968088893377, guid: a22550e9dd649544697d29e4e5eb0327, type: 3}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
@@ -1082,6 +1090,10 @@ PrefabInstance:
     - target: {fileID: 6011161968088893377, guid: a22550e9dd649544697d29e4e5eb0327, type: 3}
       propertyPath: Ways.Array.size
       value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6011161968088893377, guid: a22550e9dd649544697d29e4e5eb0327, type: 3}
+      propertyPath: TiltDisplacement
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6011161968088893377, guid: a22550e9dd649544697d29e4e5eb0327, type: 3}
       propertyPath: IndexCurrentPoint
