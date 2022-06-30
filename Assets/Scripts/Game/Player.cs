@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
     [Range(0, 10)]
     public float SpeedOfRotate;
 
+    public GameObject FieldOfFixationShoot;
+
     public GameObject Gun;
     public AudioSource GunSound;
 
@@ -24,18 +26,23 @@ public class Player : MonoBehaviour
 
     [Range(0, 10)]
     public float MaxDistanceFromCenter;
-    private float StartGameObjectZ; //Start pos of Z coordinate
 
+    private float StartGameObjectZ; //Start pos of Z coordinate
 
     void Start()
     {
-
+        FieldPos = FieldOfFixationShoot.transform.localPosition;
+        FieldWidth = FieldOfFixationShoot.GetComponent<RectTransform>().rect.width;
+        FieldHeight = FieldOfFixationShoot.GetComponent<RectTransform>().rect.height;
     }
 
     void Update()
     {
-        AimGun();
-        Shoot();
+        if (AboveField())
+        {
+            AimGun();
+            Shoot();
+        }
     }
 
     void Shoot()
@@ -88,13 +95,33 @@ public class Player : MonoBehaviour
     }
 
     Plane plane = new Plane(Vector3.up, 0);
+    private Vector3 FieldPos;
+    private float FieldWidth;
+    private float FieldHeight;
+
+    bool AboveField()
+    {
+        Vector3 ViewportMousePos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+        ViewportMousePos.x *= Screen.width;
+        ViewportMousePos.y *= Screen.height;
+
+        if (ViewportMousePos.x <= Screen.width - (Screen.width - FieldWidth - FieldPos.x * 2) && ViewportMousePos.x >= Screen.width - FieldWidth)
+        {
+            if (ViewportMousePos.y <= Screen.height - (Screen.height - FieldHeight - FieldPos.y * 2) && ViewportMousePos.y >= Screen.height - FieldHeight)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     void AimGun()
     {
-        Ray ray;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
         float distance = 1000;
+        int layerMask = 1 << 7;
 
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (plane.Raycast(ray, out distance))
+        if (Physics.Raycast(ray, out hit, distance, layerMask))
         {
             Vector3 forward = ray.GetPoint(distance) - Gun.transform.position;
             Gun.transform.rotation = Quaternion.Lerp(Gun.transform.rotation, Quaternion.LookRotation(forward, Vector3.up), SpeedOfLookingGun);
