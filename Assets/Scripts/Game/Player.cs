@@ -10,6 +10,11 @@ public class Player : MonoBehaviour
     public float SpeedOfRotate;
 
     public GameObject Gun;
+    public AudioSource GunSound;
+
+    [SerializeField] private AudioClip PistolCockSound;
+    [SerializeField] private AudioClip PistolShootSound;
+
     [Range(0, 1)]
     public float SpeedOfLookingGun;
     [Range(0, 100)]
@@ -26,7 +31,6 @@ public class Player : MonoBehaviour
     {
 
     }
-
 
     void Update()
     {
@@ -50,13 +54,15 @@ public class Player : MonoBehaviour
                 Gun.transform.eulerAngles.y,
                 Gun.transform.eulerAngles.z);
 
+            //Gun sound
+            GunSound.PlayOneShot(PistolShootSound);
+
             //Hit
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hit, distance, layerMask))
             {
                 hit.transform.parent.parent.GetComponent<EnemyProfile>().CurrentHP -= Damage;
-                hit.transform.parent.parent.GetComponent<EnemyProfile>().elapsed = 0;
             }
         }
 #if UNITY_EDITOR
@@ -70,10 +76,12 @@ public class Player : MonoBehaviour
             //Hit
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
+            //Gun sound
+            GunSound.PlayOneShot(PistolShootSound);
+
             if (Physics.Raycast(ray, out hit, distance, layerMask))
             {
                 hit.transform.parent.parent.GetComponent<EnemyProfile>().CurrentHP -= Damage;
-                hit.transform.parent.parent.GetComponent<EnemyProfile>().elapsed = 0;
             }
         }
 #endif

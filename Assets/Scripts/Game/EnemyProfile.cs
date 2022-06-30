@@ -36,19 +36,15 @@ public class EnemyProfile : MonoBehaviour
         Hit();
     }
 
-    [HideInInspector] public float elapsed = 1;
-    private float bufHP;
+    private float elapsed = 0;
     void Hit()
     {
-        if (elapsed < 1)
+        if (elapsed < (MaxHP - CurrentHP) / MaxHP)
         {
             elapsed += Time.deltaTime * SpeedOfChangingHPbar;
         }
-        else
-        {
-            bufHP = CurrentHP / MaxHP;
-        }
-        HPBar.fillAmount = Mathf.Lerp(bufHP, CurrentHP / MaxHP, elapsed);
+
+        HPBar.fillAmount = Mathf.Lerp(1, 0, elapsed);
     }
 
     void Death()

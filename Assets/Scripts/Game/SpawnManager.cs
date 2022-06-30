@@ -65,6 +65,7 @@ public class SpawnManager : MonoBehaviour
 
                 obj.GetComponent<AI>().IndexTypesOfEnemy = randEnemy;
                 obj.GetComponent<AI>().spawnManger = this;
+                obj.GetComponent<EnemyProfile>().enabled = true;
                 obj.GetComponent<AI>().enabled = true;
 
                 //Deleting point from list of available for spawning
