@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
+
+
 public class EnemyProfile : MonoBehaviour
 {
     public float MaxHP;
@@ -17,8 +19,22 @@ public class EnemyProfile : MonoBehaviour
         }
         get { return currentHP; }
     }
-    public float ScoreForKill;
-    private bool CanDropBooster;
+    public int ScoreForKill;
+
+    public GameObject IceCube;
+    [HideInInspector] public bool IsFreezy;
+
+    [Range(0, 10)]
+    [SerializeField] private float TimeForUnfreezy;
+    private float CurrentTimeForUnfreezy;
+
+    [SerializeField] private GameObject Booster;
+
+    [Range(0, 1)]
+    [SerializeField] private float ChangeOfDrop;
+    [SerializeField] private bool CanDropBooster;
+    
+    [HideInInspector] public SpawnManager spawnManager;
 
     [Range(0, 10)]
     [SerializeField] private float SpeedOfChangingHPbar;
@@ -28,16 +44,27 @@ public class EnemyProfile : MonoBehaviour
     void Start()
     {
         CurrentHP = MaxHP;
+
+        CurrentTimeForUnfreezy = TimeForUnfreezy;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Hit();
+        HPbarAnimation();
+        if (CurrentHP == 0)
+        {
+            Death();
+        }
+    }
+
+    public void BeHit(float damage)
+    {
+        currentHP -= damage;
     }
 
     private float elapsed = 0;
-    void Hit()
+    void HPbarAnimation()
     {
         if (elapsed < (MaxHP - CurrentHP) / MaxHP)
         {
@@ -47,8 +74,52 @@ public class EnemyProfile : MonoBehaviour
         HPBar.fillAmount = Mathf.Lerp(1, 0, elapsed);
     }
 
-    void Death()
+    void DropBooster()
+    {
+        Quaternion rotation = new Quaternion(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360), Quaternion.identity.w);
+        Transform obj = Instantiate(Booster, transform.position, rotation).transform;
+
+        obj.GetComponent<Boosters>().spawnManager = spawnManager;
+
+        #region Set random type booster
+        System.Array values = System.Enum.GetValues(typeof(TypesBooster));
+        System.Random random = new System.Random();
+        TypesBooster randomType = (TypesBooster)values.GetValue(random.Next(values.Length));
+
+        obj.GetComponent<Boosters>().typesBooster = randomType;
+        #endregion
+    }
+
+    public void Unfreezy()
     {
 
+    }
+
+    public void DeathWithoutDropReward()
+    {
+        //Delete self
+        spawnManager.Enemy.Remove(gameObject);
+        Destroy(gameObject);
+    }
+
+    public void Death()
+    {
+        //Get score
+        spawnManager.player.Score += ScoreForKill;
+        spawnManager.player.ScoreText.text = "Score: " + spawnManager.player.Score;
+
+        //Drop booster
+        if (CanDropBooster)
+        {
+            float rand = Random.Range(0, 1f);
+            if (rand <= ChangeOfDrop)
+            {
+                DropBooster();
+            }
+        }
+
+        //Delete self
+        spawnManager.Enemy.Remove(gameObject);
+        Destroy(gameObject);
     }
 }

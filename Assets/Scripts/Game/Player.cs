@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -16,6 +17,9 @@ public class Player : MonoBehaviour
 
     [SerializeField] private AudioClip PistolCockSound;
     [SerializeField] private AudioClip PistolShootSound;
+
+    public Text ScoreText;
+    public int Score;
 
     [Range(0, 1)]
     public float SpeedOfLookingGun;
@@ -34,6 +38,10 @@ public class Player : MonoBehaviour
         FieldPos = FieldOfFixationShoot.transform.localPosition;
         FieldWidth = FieldOfFixationShoot.GetComponent<RectTransform>().rect.width;
         FieldHeight = FieldOfFixationShoot.GetComponent<RectTransform>().rect.height;
+
+        ScoreText.text = "Score: " + Score;
+
+        StartGameObjectZ = transform.position.z;
     }
 
     void Update()
@@ -50,10 +58,36 @@ public class Player : MonoBehaviour
         RaycastHit hit;
         Ray ray;
         float distance = 1000;
-        int layerMask = 1 << 6;
+        int layerMask = (1 << 6) | (1 << 8);
 
-  
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            //Recoil
+            Gun.transform.eulerAngles = new Vector3(
+                            Gun.transform.eulerAngles.x - WeaponRecoilStrong,
+                            Gun.transform.eulerAngles.y,
+                            Gun.transform.eulerAngles.z);
+
+            //Hit
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            //Gun sound
+            GunSound.PlayOneShot(PistolShootSound);
+
+            if (Physics.Raycast(ray, out hit, distance, layerMask))
+            {
+                if (hit.transform.gameObject.layer == 6)
+                {
+                    hit.transform.parent.parent.GetComponent<EnemyProfile>().BeHit(Damage);
+                }
+                else if (hit.transform.gameObject.layer == 8)
+                {
+                    hit.transform.parent.parent.GetComponent<Boosters>().BeHit();
+                }
+            }
+        }
+#if UNITY_EDITOR
+        if (Input.GetMouseButtonDown(0))
         {
             //Recoil
             Gun.transform.eulerAngles = new Vector3(
@@ -61,25 +95,6 @@ public class Player : MonoBehaviour
                 Gun.transform.eulerAngles.y,
                 Gun.transform.eulerAngles.z);
 
-            //Gun sound
-            GunSound.PlayOneShot(PistolShootSound);
-
-            //Hit
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit, distance, layerMask))
-            {
-                hit.transform.parent.parent.GetComponent<EnemyProfile>().CurrentHP -= Damage;
-            }
-        }
-#if UNITY_EDITOR
-        if (Input.GetMouseButtonDown(0))
-        {
-            Gun.transform.eulerAngles = new Vector3(
-                Gun.transform.eulerAngles.x - WeaponRecoilStrong,
-                Gun.transform.eulerAngles.y,
-                Gun.transform.eulerAngles.z);
-
             //Hit
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -88,7 +103,15 @@ public class Player : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, distance, layerMask))
             {
-                hit.transform.parent.parent.GetComponent<EnemyProfile>().CurrentHP -= Damage;
+                if (hit.transform.gameObject.layer == 6)
+                {
+                    hit.transform.parent.parent.GetComponent<EnemyProfile>().BeHit(Damage);
+                }
+                else if (hit.transform.gameObject.layer == 8)
+                {
+                    hit.transform.GetComponent<Boosters>().ReturnSize();
+                    hit.transform.GetComponent<Boosters>().BeHit();
+                }
             }
         }
 #endif

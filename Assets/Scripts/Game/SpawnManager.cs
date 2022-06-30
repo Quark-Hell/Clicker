@@ -11,11 +11,14 @@ public class SpawnManager : MonoBehaviour
     public float SpawnDelay;
     private float TimeRemaining;
 
-    public List<List<Vector3>> PosForSpawn;
-    public List<List<Vector3>> AvailablePosForSpawn;
+    public Player player;
 
-    [SerializeField]
-    private List<GameObject> StorageOfPos;
+    [HideInInspector] public List<List<Vector3>> PosForSpawn;
+    [HideInInspector] public List<List<Vector3>> AvailablePosForSpawn;
+
+    [HideInInspector] public List<GameObject> Enemy;
+
+    [SerializeField] private List<GameObject> StorageOfPos;
 
     public List<GameObject> TypesOfEnemy;
 
@@ -65,8 +68,12 @@ public class SpawnManager : MonoBehaviour
 
                 obj.GetComponent<AI>().IndexTypesOfEnemy = randEnemy;
                 obj.GetComponent<AI>().spawnManger = this;
-                obj.GetComponent<EnemyProfile>().enabled = true;
                 obj.GetComponent<AI>().enabled = true;
+                obj.GetComponent<EnemyProfile>().spawnManager = this;
+                obj.GetComponent<EnemyProfile>().enabled = true;
+
+                Enemy.Add(obj.gameObject);
+                print(Enemy.Count);
 
                 //Deleting point from list of available for spawning
                 AvailablePosForSpawn[randEnemy].RemoveAt(randPos);
