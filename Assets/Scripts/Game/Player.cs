@@ -15,12 +15,20 @@ public class Player : MonoBehaviour
     [SerializeField] private SpawnManager spawnManager;
 
     public GameObject Gun;
+    public GameObject Pistol;
+    public GameObject Rifle;
     public AudioSource GunSound;
+
+    private bool HavePistol = true;
+
+    private GameObject PistolFire;
+    private GameObject RifleFire;
 
     [SerializeField] private AudioClip PistolCockSound;
     [SerializeField] private AudioClip PistolShootSound;
 
     public Text ScoreText;
+    public Text ScoreTextOnLoseMenu;
     public int Score;
 
     [Range(0, 1)]
@@ -50,6 +58,9 @@ public class Player : MonoBehaviour
 
         Timer = spawnManager.StartSpawnDelay;
         DelayText.text = "" + Timer;
+
+        PistolFire = Pistol.transform.GetChild(0).gameObject;
+        RifleFire = Rifle.transform.GetChild(0).gameObject;
     }
 
     void Update()
@@ -62,6 +73,8 @@ public class Player : MonoBehaviour
         {
             AimGun();
             Shoot();
+            //Just effect of fire
+            FireFading();
         }
     }
 
@@ -105,6 +118,31 @@ public class Player : MonoBehaviour
         DelayText.fontSize = (int)Mathf.Lerp(MinTextSize, MaxTextSize , Elapsed);
     }
 
+    private float FireElapsed = 0.1f;
+    private bool IsFire;
+    void FireFading()
+    {
+        if (IsFire)
+        {
+            FireElapsed -= Time.deltaTime;
+            print(FireElapsed);
+            if (FireElapsed <= 0)
+            {
+                FireElapsed = 0.1f;
+                IsFire = false;
+                //Disable gun fire
+                if (HavePistol)
+                {
+                    PistolFire.SetActive(false);
+                }
+                else
+                {
+                    RifleFire.SetActive(false);
+                }
+            }
+        }
+    }
+
     void Shoot()
     {
         RaycastHit hit;
@@ -125,6 +163,17 @@ public class Player : MonoBehaviour
 
             //Gun sound
             GunSound.PlayOneShot(PistolShootSound);
+
+            //Fire effect
+            IsFire = true;
+            if (HavePistol)
+            {
+                PistolFire.SetActive(true);
+            }
+            else
+            {
+                RifleFire.SetActive(true);
+            }
 
             if (Physics.Raycast(ray, out hit, distance, layerMask))
             {
@@ -152,6 +201,17 @@ public class Player : MonoBehaviour
 
             //Gun sound
             GunSound.PlayOneShot(PistolShootSound);
+
+            //Fire effect
+            IsFire = true;
+            if (HavePistol)
+            {
+                PistolFire.SetActive(true);
+            }
+            else
+            {
+                RifleFire.SetActive(true);
+            }
 
             if (Physics.Raycast(ray, out hit, distance, layerMask))
             {
@@ -229,6 +289,7 @@ public class Player : MonoBehaviour
 
     public void Lose()
     {
+        ScoreTextOnLoseMenu.text = "Your score:" + Score;
         LoseMenu.SetActive(true);
     }
 }
