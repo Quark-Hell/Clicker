@@ -11,7 +11,6 @@ public struct DestinationDots
 
 public class AI : MonoBehaviour
 {
-
     [SerializeField] private List<DestinationDots> Ways;
     [SerializeField] private float MovingDelay;
 
@@ -27,34 +26,41 @@ public class AI : MonoBehaviour
 
     private float MovingDelayTimer;
 
+    public Vector3 CurrentPoint;
+
     private Vector3 FromPoint;
     private Vector3 ToPoint;
 
     private int IndexCurrentPoint;
 
     [HideInInspector]
-    public SpawnManager spawnManger;
+    public SpawnManager spawnManager;
 
     [HideInInspector]
     public int IndexTypesOfEnemy;
+
+    private EnemyProfile enemyProfile;
 
     // Start is called before the first frame update
     void Start()
     {
         FromPoint = transform.position;
+        CurrentPoint = transform.position;
         FindingIndexOfSpawnPointInGeneralList();
 
         MovingDelayTimer = MovingDelay;
 
         minimum = -TiltDisplacement;
         maximum = TiltDisplacement;
+
+        enemyProfile = gameObject.transform.GetComponent<EnemyProfile>();
     }
 
     bool FindingIndexOfSpawnPointInGeneralList()
     {
-        for (int i = 0; i < spawnManger.PosForSpawn[IndexTypesOfEnemy].Count; i++)
+        for (int i = 0; i < spawnManager.PosForSpawn[IndexTypesOfEnemy].Count; i++)
         {
-            if (transform.position == spawnManger.PosForSpawn[IndexTypesOfEnemy][i])
+            if (transform.position == spawnManager.PosForSpawn[IndexTypesOfEnemy][i])
             {
                 IndexCurrentPoint = i;
                 return true;
@@ -66,10 +72,12 @@ public class AI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        CheckPosition();
-        Moving();
-        TiltPingPong();
+        if (enemyProfile.IsFreezy == false)
+        {
+            CheckPosition();
+            Moving();
+            TiltPingPong();
+        }
     }
 
     bool CheckPosition()
@@ -82,15 +90,15 @@ public class AI : MonoBehaviour
         else
         {
             int randDest = Random.Range(0, Ways[IndexCurrentPoint].To.Count);
-            for (int i = 0; i < spawnManger.AvailablePosForSpawn[IndexTypesOfEnemy].Count; i++)
+            for (int i = 0; i < spawnManager.AvailablePosForSpawn[IndexTypesOfEnemy].Count; i++)
             {
                 //check available destination
-                if (Ways[IndexCurrentPoint].To[randDest].position == spawnManger.AvailablePosForSpawn[IndexTypesOfEnemy][i])
+                if (Ways[IndexCurrentPoint].To[randDest].position == spawnManager.AvailablePosForSpawn[IndexTypesOfEnemy][i])
                 {
                     //Preparing to moving
                     FromPoint = transform.position;
                     ToPoint = Ways[IndexCurrentPoint].To[randDest].position;
-                    spawnManger.AvailablePosForSpawn[IndexTypesOfEnemy].RemoveAt(i);
+                    spawnManager.AvailablePosForSpawn[IndexTypesOfEnemy].RemoveAt(i);
                     IsMoving = true;
 
                     //Restart timer
@@ -115,7 +123,8 @@ public class AI : MonoBehaviour
             if (gameObject.transform.position == ToPoint)
             {
                 FindingIndexOfSpawnPointInGeneralList();
-                spawnManger.AvailablePosForSpawn[IndexTypesOfEnemy].Add(FromPoint);
+                CurrentPoint = transform.position;
+                spawnManager.AvailablePosForSpawn[IndexTypesOfEnemy].Add(FromPoint);
                 IsMoving = false;
             }
         }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1043450965848759554}
   - component: {fileID: 1043450965848759555}
   - component: {fileID: 1043450965848759581}
+  - component: {fileID: 1720516760179473852}
   m_Layer: 8
   m_Name: Box
   m_TagString: Untagged
@@ -79,7 +80,19 @@ MonoBehaviour:
   spawnManager: {fileID: 0}
   SpeedDisappear: 0.7
   MinSizeToDeath: {x: 0, y: 0, z: 0}
-  TimeForUnfreezy: 5
+--- !u!65 &1720516760179473852
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196606758418456657}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4, y: 4, z: 4}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &668677191922745087
 GameObject:
   m_ObjectHideFlags: 0

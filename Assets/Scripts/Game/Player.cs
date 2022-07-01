@@ -12,6 +12,8 @@ public class Player : MonoBehaviour
 
     public GameObject FieldOfFixationShoot;
 
+    [SerializeField] private SpawnManager spawnManager;
+
     public GameObject Gun;
     public AudioSource GunSound;
 
@@ -31,6 +33,9 @@ public class Player : MonoBehaviour
     [Range(0, 10)]
     public float MaxDistanceFromCenter;
 
+    public bool IsLose;
+    public GameObject LoseMenu;
+
     private float StartGameObjectZ; //Start pos of Z coordinate
 
     void Start()
@@ -42,15 +47,66 @@ public class Player : MonoBehaviour
         ScoreText.text = "Score: " + Score;
 
         StartGameObjectZ = transform.position.z;
+
+        Timer = spawnManager.SpawnDelay;
+        DelayText.text = "" + Timer;
     }
 
     void Update()
     {
-        if (AboveField())
+        if (GameNotStarted)
+        {
+            StartGameEffect();
+        }
+        if (AboveField() && IsLose == false)
         {
             AimGun();
             Shoot();
         }
+    }
+
+    [SerializeField] private int MaxTextSize;
+    [SerializeField] private int MinTextSize;
+    [SerializeField] private Text DelayText;
+    private float Elapsed = 1;
+    private float Timer;
+    private bool GameNotStarted = true;
+    void StartGameEffect()
+    {
+        //Timer
+        Elapsed -= Time.deltaTime;
+        //Restart timer
+        if (Elapsed <= 0)
+        {
+            //Text changing
+            if (DelayText.fontSize == MinTextSize)
+            {
+                if (Timer - 1 == 0)
+                {
+                    Timer--;
+                    DelayText.fontSize = MaxTextSize;
+                    DelayText.text = "Fire!!!";
+                    print("if");
+                }
+                else if (Timer == 0)
+                {
+                    GameNotStarted = false;
+                    DelayText.text = "";
+                    print("else if");
+                }
+                else
+                {
+                    Timer--;
+                    DelayText.fontSize = MaxTextSize;
+                    DelayText.text = "" + Timer;
+                    print("else");
+                }
+            }
+            Elapsed = 1;
+        }
+
+        //FontSize changing
+        DelayText.fontSize = (int)Mathf.Lerp(MinTextSize, MaxTextSize , Elapsed);
     }
 
     void Shoot()
@@ -173,5 +229,10 @@ public class Player : MonoBehaviour
     void RotateCamera(float Side)
     {
         transform.eulerAngles = new Vector3(16, transform.eulerAngles.y + SpeedOfRotate * Side * Time.deltaTime, 0);
+    }
+
+    public void Lose()
+    {
+        LoseMenu.SetActive(true);
     }
 }

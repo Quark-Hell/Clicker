@@ -23,6 +23,7 @@ public class EnemyProfile : MonoBehaviour
 
     public GameObject IceCube;
     [HideInInspector] public bool IsFreezy;
+    private Vector3 StartIceSize;
 
     [Range(0, 10)]
     [SerializeField] private float TimeForUnfreezy;
@@ -36,22 +37,33 @@ public class EnemyProfile : MonoBehaviour
     
     [HideInInspector] public SpawnManager spawnManager;
 
-    [Range(0, 10)]
+    [Range(0, 1)]
     [SerializeField] private float SpeedOfChangingHPbar;
 
-    [SerializeField]  private Image HPBar;
+    [SerializeField] private Image HPBar;
+
+    private AI ai;
 
     void Start()
     {
         CurrentHP = MaxHP;
 
         CurrentTimeForUnfreezy = TimeForUnfreezy;
+        StartIceSize = IceCube.transform.localScale;
+
+        ai = gameObject.transform.GetComponent<AI>();
     }
 
     // Update is called once per frame
     void Update()
     {
         HPbarAnimation();
+
+        if (IsFreezy)
+        {
+            Unfreezy();
+        }
+
         if (CurrentHP == 0)
         {
             Death();
@@ -92,11 +104,28 @@ public class EnemyProfile : MonoBehaviour
 
     public void Unfreezy()
     {
+        Vector3 speed;
+        speed.x = StartIceSize.x / TimeForUnfreezy * Time.deltaTime;
+        speed.y = StartIceSize.y / TimeForUnfreezy * Time.deltaTime;
+        speed.z = StartIceSize.z / TimeForUnfreezy * Time.deltaTime;
 
+        IceCube.transform.localScale -= speed;
+        if (IceCube.transform.localScale.x <= 0)
+        {
+            IsFreezy = false;
+            IceCube.SetActive(false);
+            IceCube.transform.localScale = StartIceSize;
+        }
     }
 
-    public void DeathWithoutDropReward()
+    public void DeathWithoutDropBooster()
     {
+        //Get score
+        spawnManager.player.Score += ScoreForKill;
+        spawnManager.player.ScoreText.text = "Score: " + spawnManager.player.Score;
+
+        spawnManager.AvailablePosForSpawn[ai.IndexTypesOfEnemy].Add(ai.CurrentPoint);
+
         //Delete self
         spawnManager.Enemy.Remove(gameObject);
         Destroy(gameObject);
@@ -117,6 +146,8 @@ public class EnemyProfile : MonoBehaviour
                 DropBooster();
             }
         }
+
+        spawnManager.AvailablePosForSpawn[ai.IndexTypesOfEnemy].Add(ai.CurrentPoint);
 
         //Delete self
         spawnManager.Enemy.Remove(gameObject);

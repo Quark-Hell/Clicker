@@ -11,7 +11,7 @@ public class TypeOfMenu {
 
     public List<GameObject> Object;
     public Vector3 Displacement;
-    [Range(0, 1)] public float SpeedOfShift;
+    [Range(0, 0.4f)] public float SpeedOfShift;
     public bool IsShift;
     public bool Show;
 
@@ -47,11 +47,24 @@ public class ButtonManager : MonoBehaviour
 
     public void Stats()
     {
+        //Main menu
+        MainMenu[0].IsShift = true;
+        MainMenu[0].Show = false;
+        MainMenu[0].Displacement = MainMenu[2].Displacement;
 
+        //Stats
+        MainMenu[1].IsShift = true;
+        MainMenu[1].Show = true;
     }
     public void BackFromStats()
     {
+        //Stats
+        MainMenu[1].IsShift = true;
+        MainMenu[1].Show = false;
 
+        //Main menu
+        MainMenu[0].IsShift = true;
+        MainMenu[0].Show = true;
     }
 
     public void Credits()
@@ -59,6 +72,7 @@ public class ButtonManager : MonoBehaviour
         //Main menu
         MainMenu[0].IsShift = true;
         MainMenu[0].Show = false;
+        MainMenu[0].Displacement = MainMenu[1].Displacement;
 
         //Credits
         MainMenu[2].IsShift = true;
@@ -66,11 +80,11 @@ public class ButtonManager : MonoBehaviour
     }
     public void BackFromCredits()
     {
-        //Main menu
+        //Credits
         MainMenu[2].IsShift = true;
         MainMenu[2].Show = false;
 
-        //Credits
+        //Main menu
         MainMenu[0].IsShift = true;
         MainMenu[0].Show = true;
     }

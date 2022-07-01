@@ -81,7 +81,7 @@ public class Boosters : MonoBehaviour
         {
             for (int i = 0; i < spawnManager.Enemy.Count; i++)
             {
-                spawnManager.Enemy[i].GetComponent<EnemyProfile>().DeathWithoutDropReward();
+                spawnManager.Enemy[i].GetComponent<EnemyProfile>().DeathWithoutDropBooster();
             }
         }
         if (typesBooster == TypesBooster.Freezer)
@@ -90,7 +90,6 @@ public class Boosters : MonoBehaviour
             {
                 spawnManager.Enemy[i].GetComponent<EnemyProfile>().IceCube.SetActive(true);
                 spawnManager.Enemy[i].GetComponent<EnemyProfile>().IsFreezy = true;
-                print("work");
             }
         }
         if (typesBooster == TypesBooster.AutomaticGun)
@@ -99,7 +98,6 @@ public class Boosters : MonoBehaviour
             {
                 spawnManager.Enemy[i].GetComponent<EnemyProfile>().IceCube.SetActive(true);
                 spawnManager.Enemy[i].GetComponent<EnemyProfile>().IsFreezy = true;
-                print("work");
             }
         }
     }

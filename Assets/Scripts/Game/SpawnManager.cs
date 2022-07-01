@@ -22,6 +22,8 @@ public class SpawnManager : MonoBehaviour
 
     public List<GameObject> TypesOfEnemy;
 
+    [SerializeField] private int MaxEnemyCountToLose;
+
     void Start()
     {
         PosForSpawn = new List<List<Vector3>>();
@@ -46,7 +48,10 @@ public class SpawnManager : MonoBehaviour
 
     void Update()
     {
-        SpawnEnemy();
+        if (player.IsLose == false)
+        {
+            SpawnEnemy();
+        }
     }
 
     bool SpawnEnemy()
@@ -58,6 +63,13 @@ public class SpawnManager : MonoBehaviour
         }
         else
         {
+            if (Enemy.Count > MaxEnemyCountToLose)
+            {
+                player.Lose();
+                player.IsLose = true;
+            }
+            else
+            {
             #region Spawn Enemy
             int randEnemy = Random.Range(0, TypesOfEnemy.Count);
             int randPos = Random.Range(0, AvailablePosForSpawn[randEnemy].Count);
@@ -67,13 +79,12 @@ public class SpawnManager : MonoBehaviour
                 Transform obj = Instantiate(TypesOfEnemy[randEnemy], AvailablePosForSpawn[randEnemy][randPos], Quaternion.identity).transform;
 
                 obj.GetComponent<AI>().IndexTypesOfEnemy = randEnemy;
-                obj.GetComponent<AI>().spawnManger = this;
+                obj.GetComponent<AI>().spawnManager = this;
                 obj.GetComponent<AI>().enabled = true;
                 obj.GetComponent<EnemyProfile>().spawnManager = this;
                 obj.GetComponent<EnemyProfile>().enabled = true;
 
                 Enemy.Add(obj.gameObject);
-                print(Enemy.Count);
 
                 //Deleting point from list of available for spawning
                 AvailablePosForSpawn[randEnemy].RemoveAt(randPos);
@@ -83,8 +94,20 @@ public class SpawnManager : MonoBehaviour
             //Restart timer
             TimeRemaining = SpawnDelay;
             return true;
+            }
         }
 
         return false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (AvailablePosForSpawn != null)
+        {
+            for (int i = 0; i < AvailablePosForSpawn[0].Count; i++)
+            {
+                Gizmos.DrawSphere(AvailablePosForSpawn[0][i], 1);
+            }
+        }
     }
 }
