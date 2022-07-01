@@ -8,7 +8,6 @@ using UnityEngine;
 public class EnemyProfile : MonoBehaviour
 {
     public float MaxHP;
-
     private float currentHP;
     [HideInInspector] public float CurrentHP
     {

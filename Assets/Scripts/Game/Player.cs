@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioSource MusicSource;
     private float Elapsed = 1;
     private float Timer;
-    private bool GameNotStarted = true;
+    [HideInInspector] public bool GameNotStarted = true;
     void StartGameEffect()
     {
         //Timer

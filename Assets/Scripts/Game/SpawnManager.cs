@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    public float Difficulty;
-    public float IncreaseDifficulty;
+    public float Difficulty = 1;
+    [Range(0, 10)]
+    public float IncreaseDifficulty = 1;
 
     [Range(0, 10)]
     public float StartSpawnDelay;
@@ -53,6 +54,19 @@ public class SpawnManager : MonoBehaviour
         if (player.IsLose == false)
         {
             SpawnEnemy();
+            if (player.GameNotStarted == false)
+            {
+                IncreaseDifficult();
+            }
+        }
+    }
+
+    void IncreaseDifficult()
+    {
+        Difficulty += IncreaseDifficulty / 10 * Time.deltaTime;
+        if (SpawnDelay - Difficulty / 50 * Time.deltaTime >= 0)
+        {
+            SpawnDelay -= Difficulty / 50 * Time.deltaTime;
         }
     }
 
@@ -84,6 +98,7 @@ public class SpawnManager : MonoBehaviour
                 obj.GetComponent<AI>().spawnManager = this;
                 obj.GetComponent<AI>().enabled = true;
                 obj.GetComponent<EnemyProfile>().spawnManager = this;
+                obj.GetComponent<EnemyProfile>().MaxHP *= Difficulty;
                 obj.GetComponent<EnemyProfile>().enabled = true;
 
                 Enemy.Add(obj.gameObject);

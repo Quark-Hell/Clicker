@@ -2737,10 +2737,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a945cce622a8e24181f7110794acaf7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Difficulty: 0
-  IncreaseDifficulty: 0
+  Difficulty: 1
+  IncreaseDifficulty: 1
   StartSpawnDelay: 4
-  SpawnDelay: 1
+  SpawnDelay: 2
   player: {fileID: 1927621477}
   Enemy: []
   StorageOfPos:
@@ -2749,7 +2749,7 @@ MonoBehaviour:
   - {fileID: 489341261}
   TypesOfEnemy:
   - {fileID: 869314486}
-  MaxEnemyCountToLose: 3
+  MaxEnemyCountToLose: 100
 --- !u!4 &1193137083
 Transform:
   m_ObjectHideFlags: 0
@@ -4552,6 +4552,7 @@ MonoBehaviour:
   MinTextSize: 150
   DelayText: {fileID: 2083282802}
   MusicSource: {fileID: 805195672}
+  GameNotStarted: 1
 --- !u!1 &1964509024
 GameObject:
   m_ObjectHideFlags: 0
