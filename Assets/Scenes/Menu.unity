@@ -486,13 +486,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fb12bf1ecc7eb944821332fbbc71a6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: Game
   MainMenu:
   - Name: Main menu
     Object:
     - {fileID: 690463100}
     Displacement: {x: -250, y: 0, z: 0}
-    SpeedOfShift: 0.05
+    SpeedOfShift: 10
     IsShift: 0
     Show: 1
     ObjectStartPos: []
@@ -500,7 +499,7 @@ MonoBehaviour:
     Object:
     - {fileID: 1822556468}
     Displacement: {x: -450, y: 0, z: 0}
-    SpeedOfShift: 0.05
+    SpeedOfShift: 10
     IsShift: 1
     Show: 0
     ObjectStartPos: []
@@ -508,7 +507,7 @@ MonoBehaviour:
     Object:
     - {fileID: 1768311760}
     Displacement: {x: 450, y: 0, z: 0}
-    SpeedOfShift: 0.05
+    SpeedOfShift: 10
     IsShift: 1
     Show: 0
     ObjectStartPos: []

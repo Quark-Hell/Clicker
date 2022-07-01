@@ -48,7 +48,7 @@ public class Player : MonoBehaviour
 
         StartGameObjectZ = transform.position.z;
 
-        Timer = spawnManager.SpawnDelay;
+        Timer = spawnManager.StartSpawnDelay;
         DelayText.text = "" + Timer;
     }
 
@@ -68,6 +68,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int MaxTextSize;
     [SerializeField] private int MinTextSize;
     [SerializeField] private Text DelayText;
+    [SerializeField] private AudioSource MusicSource;
     private float Elapsed = 1;
     private float Timer;
     private bool GameNotStarted = true;
@@ -79,28 +80,23 @@ public class Player : MonoBehaviour
         if (Elapsed <= 0)
         {
             //Text changing
-            if (DelayText.fontSize == MinTextSize)
+            if (Timer - 1 == 0)
             {
-                if (Timer - 1 == 0)
-                {
-                    Timer--;
-                    DelayText.fontSize = MaxTextSize;
-                    DelayText.text = "Fire!!!";
-                    print("if");
-                }
-                else if (Timer == 0)
-                {
-                    GameNotStarted = false;
-                    DelayText.text = "";
-                    print("else if");
-                }
-                else
-                {
-                    Timer--;
-                    DelayText.fontSize = MaxTextSize;
-                    DelayText.text = "" + Timer;
-                    print("else");
-                }
+                Timer--;
+                MusicSource.Play();
+                DelayText.fontSize = MaxTextSize;
+                DelayText.text = "Fire!!!";
+            }
+            else if (Timer == 0)
+            {
+                GameNotStarted = false;
+                DelayText.text = "";
+            }
+            else
+            {
+                Timer--;
+                DelayText.fontSize = MaxTextSize;
+                DelayText.text = "" + Timer;
             }
             Elapsed = 1;
         }

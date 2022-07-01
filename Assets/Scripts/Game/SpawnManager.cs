@@ -8,6 +8,8 @@ public class SpawnManager : MonoBehaviour
     public float IncreaseDifficulty;
 
     [Range(0, 10)]
+    public float StartSpawnDelay;
+    [Range(0, 10)]
     public float SpawnDelay;
     private float TimeRemaining;
 
@@ -43,7 +45,7 @@ public class SpawnManager : MonoBehaviour
         }
 
         //Initialize timer
-        TimeRemaining = SpawnDelay;
+        TimeRemaining = StartSpawnDelay;
     }
 
     void Update()
