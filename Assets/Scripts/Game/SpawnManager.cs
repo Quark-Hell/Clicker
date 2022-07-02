@@ -57,19 +57,27 @@ public class SpawnManager : MonoBehaviour
 
         spawnDelay = StartSpawnDelay;
 
+        CurrentTimeForUnfreezy = TimeForUnfreezy;
+
         //Initialize timer
         TimeRemaining = StartSpawnDelay;
     }
 
     void Update()
     {
-        if (player.IsLose == false && IsSpawnFreeze == false)
+        if (player.IsLose == false)
         {
-            SpawnEnemy();
-            if (player.GameNotStarted == false)
+            if (IsSpawnFreeze == false)
             {
-                IncreaseDifficult();
-                print(SpawnDelay);
+                SpawnEnemy();
+                if (player.GameNotStarted == false)
+                {
+                    IncreaseDifficult();
+                }
+            }
+            else
+            {
+                UnfreezeSpawn();
             }
         }
     }
@@ -80,6 +88,23 @@ public class SpawnManager : MonoBehaviour
         if (SpawnDelay - Difficulty / 50 * Time.deltaTime >= 0)
         {
             SpawnDelay -= Difficulty / 50 * Time.deltaTime;
+        }
+    }
+
+    [Header("Freeze")]
+    [Range(0, 10)]
+    [SerializeField] public float TimeForUnfreezy;
+    private float CurrentTimeForUnfreezy;
+    public void UnfreezeSpawn()
+    {
+        if (IsSpawnFreeze == true)
+        {
+            CurrentTimeForUnfreezy -= Time.deltaTime;
+        }
+        if (CurrentTimeForUnfreezy <= 0)
+        {
+            CurrentTimeForUnfreezy = TimeForUnfreezy;
+            IsSpawnFreeze = false;
         }
     }
 

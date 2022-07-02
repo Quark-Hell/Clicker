@@ -23,10 +23,6 @@ public class EnemyProfile : MonoBehaviour
     public GameObject IceCube;
     private Vector3 StartIceSize;
 
-    [Range(0, 10)]
-    [SerializeField] private float TimeForUnfreezy;
-    private float CurrentTimeForUnfreezy;
-
     [SerializeField] private GameObject Booster;
 
     [Range(0, 1)]
@@ -46,7 +42,6 @@ public class EnemyProfile : MonoBehaviour
     {
         CurrentHP = MaxHP;
 
-        CurrentTimeForUnfreezy = TimeForUnfreezy;
         StartIceSize = IceCube.transform.localScale;
 
         ai = gameObject.transform.GetComponent<AI>();
@@ -103,9 +98,9 @@ public class EnemyProfile : MonoBehaviour
     public void Unfreezy()
     {
         Vector3 speed;
-        speed.x = StartIceSize.x / TimeForUnfreezy * Time.deltaTime;
-        speed.y = StartIceSize.y / TimeForUnfreezy * Time.deltaTime;
-        speed.z = StartIceSize.z / TimeForUnfreezy * Time.deltaTime;
+        speed.x = StartIceSize.x / spawnManager.TimeForUnfreezy * Time.deltaTime;
+        speed.y = StartIceSize.y / spawnManager.TimeForUnfreezy * Time.deltaTime;
+        speed.z = StartIceSize.z / spawnManager.TimeForUnfreezy * Time.deltaTime;
 
         IceCube.transform.localScale -= speed;
         if (IceCube.transform.localScale.x <= 0)

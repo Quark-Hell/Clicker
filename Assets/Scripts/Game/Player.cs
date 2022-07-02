@@ -396,6 +396,13 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.X))
         {
+            for (int i = spawnManager.Enemy.Count - 1; i > 0; i--)
+            {
+                spawnManager.Enemy[i].GetComponent<EnemyProfile>().DeathWithoutDropBooster();
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
             for (int i = 0; i < spawnManager.Enemy.Count; i++)
             {
                 spawnManager.Enemy[i].GetComponent<EnemyProfile>().IceCube.SetActive(true);

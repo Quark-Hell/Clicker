@@ -43,6 +43,12 @@ public class ButtonManager : MonoBehaviour
         {
             SceneManager.LoadScene("Game");
         }
+#if UNITY_EDITOR
+        if (Input.touchCount == 1)
+        {
+            SceneManager.LoadScene("Game");
+        }
+#endif
     }
 
     public void Stats()
@@ -58,6 +64,16 @@ public class ButtonManager : MonoBehaviour
             MainMenu[1].IsShift = true;
             MainMenu[1].Show = true;
         }
+#if UNITY_EDITOR
+        //Main menu
+        MainMenu[0].IsShift = true;
+        MainMenu[0].Show = false;
+        MainMenu[0].Displacement = MainMenu[2].Displacement;
+
+        //Stats
+        MainMenu[1].IsShift = true;
+        MainMenu[1].Show = true;
+#endif
     }
     public void BackFromStats()
     {
@@ -71,6 +87,15 @@ public class ButtonManager : MonoBehaviour
             MainMenu[0].IsShift = true;
             MainMenu[0].Show = true;
         }
+#if UNITY_EDITOR
+        //Stats
+        MainMenu[1].IsShift = true;
+        MainMenu[1].Show = false;
+
+        //Main menu
+        MainMenu[0].IsShift = true;
+        MainMenu[0].Show = true;
+#endif
     }
 
     public void Credits()
@@ -86,6 +111,16 @@ public class ButtonManager : MonoBehaviour
             MainMenu[2].IsShift = true;
             MainMenu[2].Show = true;
         }
+#if UNITY_EDITOR
+        //Main menu
+        MainMenu[0].IsShift = true;
+        MainMenu[0].Show = false;
+        MainMenu[0].Displacement = MainMenu[1].Displacement;
+
+        //Credits
+        MainMenu[2].IsShift = true;
+        MainMenu[2].Show = true;
+#endif
     }
     public void BackFromCredits()
     {
@@ -99,6 +134,15 @@ public class ButtonManager : MonoBehaviour
             MainMenu[0].IsShift = true;
             MainMenu[0].Show = true;
         }
+#if UNITY_EDITOR
+        //Credits
+        MainMenu[2].IsShift = true;
+        MainMenu[2].Show = false;
+
+        //Main menu
+        MainMenu[0].IsShift = true;
+        MainMenu[0].Show = true;
+#endif
     }
 
     public void Exit()
@@ -107,6 +151,12 @@ public class ButtonManager : MonoBehaviour
         {
             Application.Quit();
         }
+#if UNITY_EDITOR
+        if (Input.touchCount == 1)
+        {
+            Application.Quit();
+        }
+#endif
     }
 
     public void BackToMenu()
@@ -115,6 +165,12 @@ public class ButtonManager : MonoBehaviour
         {
             SceneManager.LoadScene("Menu");
         }
+#if UNITY_EDITOR
+        if (Input.touchCount == 1)
+        {
+            SceneManager.LoadScene("Menu");
+        }
+#endif
     }
     public void Restart()
     {
@@ -122,6 +178,12 @@ public class ButtonManager : MonoBehaviour
         {
             SceneManager.LoadScene("Game");
         }
+#if UNITY_EDITOR
+        if (Input.touchCount == 1)
+        {
+            SceneManager.LoadScene("Game");
+        }
+#endif
     }
 
     public void MyStatsInGame()
@@ -136,6 +198,15 @@ public class ButtonManager : MonoBehaviour
             MainMenu[1].IsShift = true;
             MainMenu[1].Show = true;
         }
+#if UNITY_EDITOR
+        //Main menu
+        MainMenu[0].IsShift = true;
+        MainMenu[0].Show = false;
+
+        //Stats
+        MainMenu[1].IsShift = true;
+        MainMenu[1].Show = true;
+#endif
     }
     public void BackFromStatsInGame()
     {
@@ -149,6 +220,15 @@ public class ButtonManager : MonoBehaviour
             MainMenu[0].IsShift = true;
             MainMenu[0].Show = true;
         }
+#if UNITY_EDITOR
+        //Stats
+        MainMenu[1].IsShift = true;
+        MainMenu[1].Show = false;
+
+        //Main menu
+        MainMenu[0].IsShift = true;
+        MainMenu[0].Show = true;
+#endif
     }
 
     void MovingPartsOfMenu()
