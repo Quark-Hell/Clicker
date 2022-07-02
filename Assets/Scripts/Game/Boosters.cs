@@ -89,7 +89,7 @@ public class Boosters : MonoBehaviour
             for (int i = 0; i < spawnManager.Enemy.Count; i++)
             {
                 spawnManager.Enemy[i].GetComponent<EnemyProfile>().IceCube.SetActive(true);
-                spawnManager.Enemy[i].GetComponent<EnemyProfile>().IsFreezy = true;
+                spawnManager.IsSpawnFreeze = true;
             }
         }
         if (typesBooster == TypesBooster.AutomaticGun)

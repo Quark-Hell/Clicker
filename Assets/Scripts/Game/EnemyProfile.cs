@@ -21,7 +21,6 @@ public class EnemyProfile : MonoBehaviour
     public int ScoreForKill;
 
     public GameObject IceCube;
-    [HideInInspector] public bool IsFreezy;
     private Vector3 StartIceSize;
 
     [Range(0, 10)]
@@ -58,7 +57,7 @@ public class EnemyProfile : MonoBehaviour
     {
         HPbarAnimation();
 
-        if (IsFreezy)
+        if (spawnManager.IsSpawnFreeze)
         {
             Unfreezy();
         }
@@ -111,7 +110,7 @@ public class EnemyProfile : MonoBehaviour
         IceCube.transform.localScale -= speed;
         if (IceCube.transform.localScale.x <= 0)
         {
-            IsFreezy = false;
+            spawnManager.IsSpawnFreeze = false;
             IceCube.SetActive(false);
             IceCube.transform.localScale = StartIceSize;
         }

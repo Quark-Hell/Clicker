@@ -39,86 +39,116 @@ public class ButtonManager : MonoBehaviour
 
     public void NewGame()
     {
-        SceneManager.LoadScene("Game");
+        if (Input.touchCount == 1)
+        {
+            SceneManager.LoadScene("Game");
+        }
     }
 
     public void Stats()
     {
-        //Main menu
-        MainMenu[0].IsShift = true;
-        MainMenu[0].Show = false;
-        MainMenu[0].Displacement = MainMenu[2].Displacement;
+        if (Input.touchCount == 1)
+        {
+            //Main menu
+            MainMenu[0].IsShift = true;
+            MainMenu[0].Show = false;
+            MainMenu[0].Displacement = MainMenu[2].Displacement;
 
-        //Stats
-        MainMenu[1].IsShift = true;
-        MainMenu[1].Show = true;
+            //Stats
+            MainMenu[1].IsShift = true;
+            MainMenu[1].Show = true;
+        }
     }
     public void BackFromStats()
     {
-        //Stats
-        MainMenu[1].IsShift = true;
-        MainMenu[1].Show = false;
+        if (Input.touchCount == 1)
+        {
+            //Stats
+            MainMenu[1].IsShift = true;
+            MainMenu[1].Show = false;
 
-        //Main menu
-        MainMenu[0].IsShift = true;
-        MainMenu[0].Show = true;
+            //Main menu
+            MainMenu[0].IsShift = true;
+            MainMenu[0].Show = true;
+        }
     }
 
     public void Credits()
     {
-        //Main menu
-        MainMenu[0].IsShift = true;
-        MainMenu[0].Show = false;
-        MainMenu[0].Displacement = MainMenu[1].Displacement;
+        if (Input.touchCount == 1)
+        {
+            //Main menu
+            MainMenu[0].IsShift = true;
+            MainMenu[0].Show = false;
+            MainMenu[0].Displacement = MainMenu[1].Displacement;
 
-        //Credits
-        MainMenu[2].IsShift = true;
-        MainMenu[2].Show = true;
+            //Credits
+            MainMenu[2].IsShift = true;
+            MainMenu[2].Show = true;
+        }
     }
     public void BackFromCredits()
     {
-        //Credits
-        MainMenu[2].IsShift = true;
-        MainMenu[2].Show = false;
+        if (Input.touchCount == 1)
+        {
+            //Credits
+            MainMenu[2].IsShift = true;
+            MainMenu[2].Show = false;
 
-        //Main menu
-        MainMenu[0].IsShift = true;
-        MainMenu[0].Show = true;
+            //Main menu
+            MainMenu[0].IsShift = true;
+            MainMenu[0].Show = true;
+        }
     }
 
     public void Exit()
     {
-        Application.Quit();
+        if (Input.touchCount == 1)
+        {
+            Application.Quit();
+        }
     }
 
     public void BackToMenu()
     {
-        SceneManager.LoadScene("Menu");
+        if (Input.touchCount == 1)
+        {
+            SceneManager.LoadScene("Menu");
+        }
     }
     public void Restart()
     {
-        SceneManager.LoadScene("Game");
+        if (Input.touchCount == 1)
+        {
+            SceneManager.LoadScene("Game");
+        }
     }
 
     public void MyStatsInGame()
     {
-        //Main menu
-        MainMenu[0].IsShift = true;
-        MainMenu[0].Show = false;
+        if (Input.touchCount == 1)
+        {
+            //Main menu
+            MainMenu[0].IsShift = true;
+            MainMenu[0].Show = false;
 
-        //Stats
-        MainMenu[1].IsShift = true;
-        MainMenu[1].Show = true;
+            //Stats
+            MainMenu[1].IsShift = true;
+            MainMenu[1].Show = true;
+        }
     }
     public void BackFromStatsInGame()
     {
-        //Stats
-        MainMenu[1].IsShift = true;
-        MainMenu[1].Show = false;
+        if (Input.touchCount == 1)
+        {
+            //Stats
+            MainMenu[1].IsShift = true;
+            MainMenu[1].Show = false;
 
-        //Main menu
-        MainMenu[0].IsShift = true;
-        MainMenu[0].Show = true;
+            //Main menu
+            MainMenu[0].IsShift = true;
+            MainMenu[0].Show = true;
+        }
     }
 
     void MovingPartsOfMenu()

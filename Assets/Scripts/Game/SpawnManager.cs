@@ -10,8 +10,16 @@ public class SpawnManager : MonoBehaviour
 
     [Range(0, 10)]
     public float StartSpawnDelay;
-    [Range(0, 10)]
-    public float SpawnDelay;
+    public float SpawnDelay
+    {
+        set
+        {
+            if (value < 0.4) { spawnDelay = 0.4f; }
+            else { spawnDelay = value; }
+        }
+        get { return spawnDelay; }
+    }
+    private float spawnDelay;
     private float TimeRemaining;
 
     public Player player;
@@ -26,6 +34,8 @@ public class SpawnManager : MonoBehaviour
     public List<GameObject> TypesOfEnemy;
 
     [SerializeField] private int MaxEnemyCountToLose;
+
+    [HideInInspector] public bool IsSpawnFreeze;
 
     void Start()
     {
@@ -45,18 +55,21 @@ public class SpawnManager : MonoBehaviour
             }
         }
 
+        spawnDelay = StartSpawnDelay;
+
         //Initialize timer
         TimeRemaining = StartSpawnDelay;
     }
 
     void Update()
     {
-        if (player.IsLose == false)
+        if (player.IsLose == false && IsSpawnFreeze == false)
         {
             SpawnEnemy();
             if (player.GameNotStarted == false)
             {
                 IncreaseDifficult();
+                print(SpawnDelay);
             }
         }
     }

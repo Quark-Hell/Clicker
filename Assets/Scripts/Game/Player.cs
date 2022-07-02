@@ -101,13 +101,16 @@ public class Player : MonoBehaviour
         {
             AimGun(touchPos);
             TouchOnScreenForShoot(touchPos);
-            //Just effect of fire
-            FireFading();
         }
+        //Just effect of fire
+        FireFading();
         if (GetRifleBooster)
         {
             HaveRifleTimer();
         }
+#if UNITY_EDITOR
+        TestBooster();
+#endif
     }
 
     #region Fields for Start Game Effect
@@ -387,5 +390,17 @@ public class Player : MonoBehaviour
 
         statsStorage.SaveGame(Score);
         statsStorage.LoadGame();
+    }
+
+    void TestBooster()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            for (int i = 0; i < spawnManager.Enemy.Count; i++)
+            {
+                spawnManager.Enemy[i].GetComponent<EnemyProfile>().IceCube.SetActive(true);
+                spawnManager.IsSpawnFreeze = true;
+            }
+        }
     }
 }

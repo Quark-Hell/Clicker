@@ -4156,9 +4156,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Difficulty: 1
-  IncreaseDifficulty: 1
+  IncreaseDifficulty: 0.5
   StartSpawnDelay: 4
-  SpawnDelay: 2
   player: {fileID: 1927621477}
   Enemy: []
   StorageOfPos:
@@ -4169,7 +4168,7 @@ MonoBehaviour:
   - {fileID: 1682278783}
   - {fileID: 2095762898}
   - {fileID: 6313634318532973774}
-  MaxEnemyCountToLose: 20
+  MaxEnemyCountToLose: 10
 --- !u!4 &1193137083
 Transform:
   m_ObjectHideFlags: 0

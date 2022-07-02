@@ -82,7 +82,7 @@ public class AI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enemyProfile.IsFreezy == false)
+        if (enemyProfile.spawnManager.IsSpawnFreeze == false)
         {
             CheckPosition();
             Moving();
