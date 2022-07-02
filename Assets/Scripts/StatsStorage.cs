@@ -14,6 +14,11 @@ public class StatsStorage : MonoBehaviour
     private int[] Score = new int[9];
     private int BetterGame;
 
+    private void Start()
+    {
+        LoadGame();
+    }
+
     public void SaveGame(int score)
     {
         //Displacement value

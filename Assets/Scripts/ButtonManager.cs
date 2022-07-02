@@ -29,7 +29,7 @@ public class ButtonManager : MonoBehaviour
         {
             for (int k = 0; k < MainMenu[i].Object.Count; k++)
             {
-                MainMenu[i].ObjectStartPos.Add(MainMenu[i].Object[k].transform.position);
+                MainMenu[i].ObjectStartPos.Add(MainMenu[i].Object[k].transform.localPosition);
             }
         }
 
@@ -134,7 +134,7 @@ public class ButtonManager : MonoBehaviour
                     //Showing
                     if (MainMenu[i].Show)
                     {
-                        MainMenu[i].Object[k].transform.position = Vector3.Lerp(MainMenu[i].Object[k].transform.position, MainMenu[i].ObjectStartPos[k], MainMenu[i].SpeedOfShift * Time.deltaTime);
+                        MainMenu[i].Object[k].transform.localPosition = Vector3.Lerp(MainMenu[i].Object[k].transform.localPosition, MainMenu[i].ObjectStartPos[k], MainMenu[i].SpeedOfShift * Time.deltaTime);
                         if (Vector3.Distance(MainMenu[i].Object[k].transform.position, MainMenu[i].ObjectStartPos[k]) < 0.001f)
                         {
                             MainMenu[i].IsShift = false;
@@ -144,7 +144,7 @@ public class ButtonManager : MonoBehaviour
                     //Hidding
                     else
                     {
-                        MainMenu[i].Object[k].transform.position = Vector3.Lerp(MainMenu[i].Object[k].transform.position, MainMenu[i].ObjectStartPos[k] + MainMenu[i].Displacement, MainMenu[i].SpeedOfShift * Time.deltaTime);
+                        MainMenu[i].Object[k].transform.localPosition = Vector3.Lerp(MainMenu[i].Object[k].transform.localPosition, MainMenu[i].ObjectStartPos[k] + MainMenu[i].Displacement, MainMenu[i].SpeedOfShift * Time.deltaTime);
                         if (Vector3.Distance(MainMenu[i].Object[k].transform.position, MainMenu[i].ObjectStartPos[k] + MainMenu[i].Displacement) < 0.001f)
                         {
                             MainMenu[i].IsShift = false;
@@ -170,7 +170,7 @@ public class ButtonManager : MonoBehaviour
                     //Showing
                     if (MainMenu[i].Show)
                     {
-                        MainMenu[i].Object[k].transform.position = MainMenu[i].ObjectStartPos[k];
+                        MainMenu[i].Object[k].transform.localPosition = MainMenu[i].ObjectStartPos[k];
 
                         MainMenu[i].IsShift = false;
                         MainMenu[i].Show = true;
@@ -178,7 +178,7 @@ public class ButtonManager : MonoBehaviour
                     //Hidding
                     else
                     {
-                        MainMenu[i].Object[k].transform.position = MainMenu[i].ObjectStartPos[k] + MainMenu[i].Displacement;
+                        MainMenu[i].Object[k].transform.localPosition = MainMenu[i].ObjectStartPos[k] + MainMenu[i].Displacement;
 
                         MainMenu[i].IsShift = false;
                         MainMenu[i].Show = false;

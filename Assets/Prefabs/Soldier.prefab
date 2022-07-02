@@ -310,12 +310,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Ways: []
-  MovingDelay: 0
+  movingDelay: 0
   MovingSpeed: 0
   TiltDisplacement: 0
   TiltSpeed: 0
   AIMesh: {fileID: 2381749653558414673}
-  spawnManger: {fileID: 0}
+  CurrentPoint: {x: 0, y: 0, z: 0}
+  spawnManager: {fileID: 0}
   IndexTypesOfEnemy: 0
 --- !u!114 &2561411612962153401
 MonoBehaviour:
@@ -324,7 +325,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6313634317786396830}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c512d12680e1d2548bfe0fd97337c8cb, type: 3}
   m_Name: 

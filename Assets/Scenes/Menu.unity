@@ -295,10 +295,10 @@ RectTransform:
   m_Father: {fileID: 1506230635}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.388, y: 0.18984742}
-  m_AnchoredPosition: {x: -0.16699219, y: -0.9499817}
-  m_SizeDelta: {x: 0.7959976, y: -2.1889954}
+  m_AnchorMin: {x: 0.013334771, y: 0}
+  m_AnchorMax: {x: 0.39564377, y: 0.18523163}
+  m_AnchoredPosition: {x: 0.5, y: 0.05001831}
+  m_SizeDelta: {x: 5.7959976, y: -0.18899536}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &93981583
 MonoBehaviour:
@@ -342,7 +342,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 5
     m_MaxSize: 177
-    m_Alignment: 4
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 1
@@ -467,6 +467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 204356336}
   - component: {fileID: 204356335}
+  - component: {fileID: 204356337}
   m_Layer: 5
   m_Name: Manger
   m_TagString: Untagged
@@ -490,7 +491,7 @@ MonoBehaviour:
   - Name: Main menu
     Object:
     - {fileID: 690463100}
-    Displacement: {x: -250, y: 0, z: 0}
+    Displacement: {x: 2000, y: 0, z: 0}
     SpeedOfShift: 10
     IsShift: 0
     Show: 1
@@ -498,7 +499,7 @@ MonoBehaviour:
   - Name: Stats
     Object:
     - {fileID: 1822556468}
-    Displacement: {x: -450, y: 0, z: 0}
+    Displacement: {x: -2000, y: 0, z: 0}
     SpeedOfShift: 10
     IsShift: 1
     Show: 0
@@ -506,7 +507,7 @@ MonoBehaviour:
   - Name: Credits
     Object:
     - {fileID: 1768311760}
-    Displacement: {x: 450, y: 0, z: 0}
+    Displacement: {x: 2000, y: 0, z: 0}
     SpeedOfShift: 10
     IsShift: 1
     Show: 0
@@ -525,6 +526,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &204356337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 204356334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2917661a491706b49ab89fa1fd183c79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ScoreText:
+  - {fileID: 1971212510}
+  - {fileID: 1269266838}
+  - {fileID: 982315255}
+  - {fileID: 15183044}
+  - {fileID: 298178197}
+  - {fileID: 633680093}
+  - {fileID: 1529204017}
+  - {fileID: 280156877}
+  - {fileID: 1887299832}
+  BetterGameText: {fileID: 93981584}
 --- !u!1 &247946272
 GameObject:
   m_ObjectHideFlags: 0

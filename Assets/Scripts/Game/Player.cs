@@ -5,44 +5,61 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("Speed parameters")]
     [Range(0, 10)]
     public float SpeedOfMoving;
     [Range(0, 10)]
     public float SpeedOfRotate;
+    [Range(0, 1)]
+    public float SpeedOfLookingGun;
 
     public GameObject FieldOfFixationShoot;
 
+    [Header("Link to spawn manager")]
     [SerializeField] private SpawnManager spawnManager;
 
+    [Header("Gun source")]
     public GameObject Gun;
     public GameObject Pistol;
     public GameObject Rifle;
+
+    [Header("Gun sound")]
     public AudioSource GunSound;
+    [SerializeField] private AudioClip CockSound;
+    [SerializeField] private AudioClip ShootSound;
 
     private bool HavePistol = true;
+    private bool GetRifleBooster = false;
+
+    [Header("Have Rifle Timer")]
+    [Range(1,10)]
+    [SerializeField] private float TimeHaveRifle;
+    private float ElapsedHaveRifle;
 
     private GameObject PistolFire;
     private GameObject RifleFire;
 
-    [SerializeField] private AudioClip PistolCockSound;
-    [SerializeField] private AudioClip PistolShootSound;
-
+    [Header("Score")]
     public Text ScoreText;
     public Text ScoreTextOnLoseMenu;
-    public int Score;
+    [HideInInspector] public int Score;
 
-    [Range(0, 1)]
-    public float SpeedOfLookingGun;
+
+    [Header("Weapom parameters")]
     [Range(0, 100)]
-    public float WeaponRecoilStrong = 5;
+    public float PistolRecoilStrong;
+    [Range(0, 100)]
+    public float RifleRecoilStrong;
     [Range(0, 100)]
     public float Damage;
+    private float CurrentRecoilStrong;
 
     [Range(0, 10)]
     public float MaxDistanceFromCenter;
 
-    public bool IsLose;
+    [Header("Lose")]
     public GameObject LoseMenu;
+    [HideInInspector] public bool IsLose;
 
     private float StartGameObjectZ; //Start pos of Z coordinate
 
@@ -64,7 +81,13 @@ public class Player : MonoBehaviour
         PistolFire = Pistol.transform.GetChild(0).gameObject;
         RifleFire = Rifle.transform.GetChild(0).gameObject;
 
-        statsStorage.LoadGame();
+        ElapsedHaveRifle = TimeHaveRifle;
+
+        ElapsedBetweenShoots = DelayBetweenShoots;
+
+        CurrentRecoilStrong = PistolRecoilStrong;
+
+        GetRifle();
     }
 
     void Update()
@@ -73,15 +96,22 @@ public class Player : MonoBehaviour
         {
             StartGameEffect();
         }
-        if (AboveField() && IsLose == false)
+        Vector2 touchPos;
+        if (AboveField(out touchPos) && IsLose == false)
         {
-            AimGun();
-            Shoot();
+            AimGun(touchPos);
+            TouchOnScreenForShoot(touchPos);
             //Just effect of fire
             FireFading();
         }
+        if (GetRifleBooster)
+        {
+            HaveRifleTimer();
+        }
     }
 
+    #region Fields for Start Game Effect
+    [Header("Values for Start Game Effect")]
     [SerializeField] private int MaxTextSize;
     [SerializeField] private int MinTextSize;
     [SerializeField] private Text DelayText;
@@ -89,6 +119,7 @@ public class Player : MonoBehaviour
     private float Elapsed = 1;
     private float Timer;
     [HideInInspector] public bool GameNotStarted = true;
+    #endregion
     void StartGameEffect()
     {
         //Timer
@@ -146,115 +177,140 @@ public class Player : MonoBehaviour
         }
     }
 
-    void Shoot()
+    [Header("")]
+    [Range(0, 1)]
+    [SerializeField] private float DelayBetweenShoots;
+    private float ElapsedBetweenShoots;
+    void TouchOnScreenForShoot(Vector2 touchPos)
+    {
+        if (ElapsedBetweenShoots > 0 && HavePistol == false)
+        {
+            ElapsedBetweenShoots -= Time.deltaTime;
+        }
+        else
+        {
+            ElapsedBetweenShoots = DelayBetweenShoots;
+            //If began so shoot
+            for (byte i = 0; i < Input.touchCount; i ++)
+            {
+                if (Input.GetTouch(i).phase == TouchPhase.Began)
+                {
+
+                    Shoot(touchPos);
+                    break;
+                }
+                else if (HavePistol == false)
+                {
+                    Shoot(touchPos);
+                    break;
+                }
+            }
+
+#if UNITY_EDITOR
+            if (Input.GetMouseButtonDown(0))
+            {
+                Shoot(touchPos);
+            }
+            if (Input.GetMouseButton(0) && HavePistol == false)
+            {
+                Shoot(touchPos);
+            }
+#endif
+        }
+    }
+
+    void Shoot(Vector2 mousePos)
     {
         RaycastHit hit;
         Ray ray;
         float distance = 1000;
         int layerMask = (1 << 6) | (1 << 8);
 
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        //Recoil
+        Gun.transform.eulerAngles = new Vector3(
+            Gun.transform.eulerAngles.x - CurrentRecoilStrong,
+            Gun.transform.eulerAngles.y,
+            Gun.transform.eulerAngles.z);
+
+        //Hit
+        ray = Camera.main.ScreenPointToRay(mousePos);
+
+        //Gun sound
+        GunSound.PlayOneShot(ShootSound);
+
+        //Fire effect
+        IsFire = true;
+        if (HavePistol)
         {
-            //Recoil
-            Gun.transform.eulerAngles = new Vector3(
-                            Gun.transform.eulerAngles.x - WeaponRecoilStrong,
-                            Gun.transform.eulerAngles.y,
-                            Gun.transform.eulerAngles.z);
+            PistolFire.SetActive(true);
+        }
+        else
+        {
+            RifleFire.SetActive(true);
+        }
 
-            //Hit
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            //Gun sound
-            GunSound.PlayOneShot(PistolShootSound);
-
-            //Fire effect
-            IsFire = true;
-            if (HavePistol)
+        //Check hit
+        if (Physics.Raycast(ray, out hit, distance, layerMask))
+        {
+            if (hit.transform.gameObject.layer == 6)
             {
-                PistolFire.SetActive(true);
+                hit.transform.parent.parent.GetComponent<EnemyProfile>().BeHit(Damage);
             }
-            else
+            else if (hit.transform.gameObject.layer == 8)
             {
-                RifleFire.SetActive(true);
-            }
-
-            if (Physics.Raycast(ray, out hit, distance, layerMask))
-            {
-                if (hit.transform.gameObject.layer == 6)
-                {
-                    hit.transform.parent.parent.GetComponent<EnemyProfile>().BeHit(Damage);
-                }
-                else if (hit.transform.gameObject.layer == 8)
-                {
-                    hit.transform.parent.parent.GetComponent<Boosters>().BeHit();
-                }
+                hit.transform.GetComponent<Boosters>().ReturnSize();
+                hit.transform.GetComponent<Boosters>().BeHit();
             }
         }
-#if UNITY_EDITOR
-        if (Input.GetMouseButtonDown(0))
-        {
-            //Recoil
-            Gun.transform.eulerAngles = new Vector3(
-                Gun.transform.eulerAngles.x - WeaponRecoilStrong,
-                Gun.transform.eulerAngles.y,
-                Gun.transform.eulerAngles.z);
-
-            //Hit
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            //Gun sound
-            GunSound.PlayOneShot(PistolShootSound);
-
-            //Fire effect
-            IsFire = true;
-            if (HavePistol)
-            {
-                PistolFire.SetActive(true);
-            }
-            else
-            {
-                RifleFire.SetActive(true);
-            }
-
-            if (Physics.Raycast(ray, out hit, distance, layerMask))
-            {
-                if (hit.transform.gameObject.layer == 6)
-                {
-                    hit.transform.parent.parent.GetComponent<EnemyProfile>().BeHit(Damage);
-                }
-                else if (hit.transform.gameObject.layer == 8)
-                {
-                    hit.transform.GetComponent<Boosters>().ReturnSize();
-                    hit.transform.GetComponent<Boosters>().BeHit();
-                }
-            }
-        }
-#endif
     }
 
+    #region Fields for AboveField
     Plane plane = new Plane(Vector3.up, 0);
     private Vector3 FieldPos;
     private float FieldWidth;
     private float FieldHeight;
-
-    bool AboveField()
+    #endregion
+    bool AboveField(out Vector2 touchPos)
     {
-        Vector3 ViewportMousePos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-        ViewportMousePos.x *= Screen.width;
-        ViewportMousePos.y *= Screen.height;
+        Vector2 ViewportTouchPos;
 
-        if (ViewportMousePos.x <= Screen.width - (Screen.width - FieldWidth - FieldPos.x * 2) && ViewportMousePos.x >= Screen.width - FieldWidth)
+        for (byte i = 0; i < Input.touchCount; i++)
         {
-            if (ViewportMousePos.y <= Screen.height - (Screen.height - FieldHeight - FieldPos.y * 2) && ViewportMousePos.y >= Screen.height - FieldHeight)
+           ViewportTouchPos = Camera.main.ScreenToViewportPoint(Input.GetTouch(i).position);
+
+            ViewportTouchPos.x *= Screen.width;
+            ViewportTouchPos.y *= Screen.height;
+
+            if (ViewportTouchPos.x <= Screen.width - (Screen.width - FieldWidth - FieldPos.x * 2) && ViewportTouchPos.x >= Screen.width - FieldWidth)
             {
+                if (ViewportTouchPos.y <= Screen.height - (Screen.height - FieldHeight - FieldPos.y * 2) && ViewportTouchPos.y >= Screen.height - FieldHeight)
+                {
+                    touchPos = ViewportTouchPos;
+                    return true;
+                }
+            }
+        }
+#if UNITY_EDITOR
+        ViewportTouchPos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+
+        ViewportTouchPos.x *= Screen.width;
+        ViewportTouchPos.y *= Screen.height;
+
+        if (ViewportTouchPos.x <= Screen.width - (Screen.width - FieldWidth - FieldPos.x * 2) && ViewportTouchPos.x >= Screen.width - FieldWidth)
+        {
+            if (ViewportTouchPos.y <= Screen.height - (Screen.height - FieldHeight - FieldPos.y * 2) && ViewportTouchPos.y >= Screen.height - FieldHeight)
+            {
+                touchPos = ViewportTouchPos;
                 return true;
             }
         }
+#endif
+        touchPos = Vector2.zero;
         return false;
     }
-    void AimGun()
+    void AimGun(Vector2 mousePos)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
         float distance = 1000;
         int layerMask = 1 << 7;
@@ -288,6 +344,40 @@ public class Player : MonoBehaviour
     void RotateCamera(float Side)
     {
         transform.eulerAngles = new Vector3(16, transform.eulerAngles.y + SpeedOfRotate * Side * Time.deltaTime, 0);
+    }
+
+    public void GetRifle()
+    {
+        //Yeah.I know that i can use HavePistol/!HavePistol value in set active
+        //But it's dangerous 
+        //If player get one more rifle boster while have rifle
+        //So it's may broken
+        if (HavePistol)
+        {
+            Pistol.SetActive(false);
+            Rifle.SetActive(true);
+            CurrentRecoilStrong = RifleRecoilStrong;
+            GetRifleBooster = true;
+            HavePistol = false;
+        }
+        else
+        {
+            Pistol.SetActive(true);
+            Rifle.SetActive(false);
+            CurrentRecoilStrong = PistolRecoilStrong;
+            GetRifleBooster = false;
+            HavePistol = true;
+        }
+    }
+
+    void HaveRifleTimer()
+    {
+        ElapsedHaveRifle -= Time.deltaTime;
+        if (ElapsedHaveRifle <= 0)
+        {
+            ElapsedHaveRifle = TimeHaveRifle;
+            GetRifle();
+        }
     }
 
     public void Lose()

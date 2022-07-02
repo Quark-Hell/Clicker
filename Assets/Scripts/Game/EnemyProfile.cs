@@ -36,8 +36,8 @@ public class EnemyProfile : MonoBehaviour
     
     [HideInInspector] public SpawnManager spawnManager;
 
-    [Range(0, 1)]
-    [SerializeField] private float SpeedOfChangingHPbar;
+    [Range(0, 5)]
+    [SerializeField] private float SpeedOfChangingHPBar;
 
     [SerializeField] private Image HPBar;
 
@@ -79,7 +79,7 @@ public class EnemyProfile : MonoBehaviour
     {
         if (elapsed < (MaxHP - CurrentHP) / MaxHP)
         {
-            elapsed += Time.deltaTime * SpeedOfChangingHPbar;
+            elapsed += Time.deltaTime * SpeedOfChangingHPBar;
         }
 
         HPBar.fillAmount = Mathf.Lerp(1, 0, elapsed);

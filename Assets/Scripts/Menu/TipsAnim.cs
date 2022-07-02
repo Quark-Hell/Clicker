@@ -26,7 +26,6 @@ public class TipsAnim : MonoBehaviour
 
     void Start()
     {
-        print("work");
         TipRect = gameObject.GetComponent<RectTransform>();
         TipText = gameObject.GetComponent<Text>();
         OutlineTipText = gameObject.transform.GetChild(0).GetComponent<Text>();

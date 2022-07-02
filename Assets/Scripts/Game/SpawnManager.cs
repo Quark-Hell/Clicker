@@ -86,31 +86,32 @@ public class SpawnManager : MonoBehaviour
             }
             else
             {
-            #region Spawn Enemy
-            int randEnemy = Random.Range(0, TypesOfEnemy.Count);
-            int randPos = Random.Range(0, AvailablePosForSpawn[randEnemy].Count);
+                #region Spawn Enemy
+                int randEnemy = Random.Range(0, TypesOfEnemy.Count);
+                int randPos = Random.Range(0, AvailablePosForSpawn[randEnemy].Count);
 
-            if (AvailablePosForSpawn[randEnemy].Count != 0)
-            {
-                Transform obj = Instantiate(TypesOfEnemy[randEnemy], AvailablePosForSpawn[randEnemy][randPos], Quaternion.identity).transform;
+                if (AvailablePosForSpawn[randEnemy].Count != 0)
+                {
+                    Transform obj = Instantiate(TypesOfEnemy[randEnemy], AvailablePosForSpawn[randEnemy][randPos], Quaternion.identity).transform;
 
-                obj.GetComponent<AI>().IndexTypesOfEnemy = randEnemy;
-                obj.GetComponent<AI>().spawnManager = this;
-                obj.GetComponent<AI>().enabled = true;
-                obj.GetComponent<EnemyProfile>().spawnManager = this;
-                obj.GetComponent<EnemyProfile>().MaxHP *= Difficulty;
-                obj.GetComponent<EnemyProfile>().enabled = true;
+                    obj.GetComponent<AI>().IndexTypesOfEnemy = randEnemy;
+                    obj.GetComponent<AI>().spawnManager = this;
+                    obj.GetComponent<AI>().MovingDelay -= Difficulty / 5;
+                    obj.GetComponent<AI>().enabled = true;
+                    obj.GetComponent<EnemyProfile>().spawnManager = this;
+                    obj.GetComponent<EnemyProfile>().MaxHP *= Difficulty;
+                    obj.GetComponent<EnemyProfile>().enabled = true;
 
-                Enemy.Add(obj.gameObject);
+                    Enemy.Add(obj.gameObject);
 
-                //Deleting point from list of available for spawning
-                AvailablePosForSpawn[randEnemy].RemoveAt(randPos);
-            }
-            #endregion
+                    //Deleting point from list of available for spawning
+                    AvailablePosForSpawn[randEnemy].RemoveAt(randPos);
+                }
+                #endregion
 
-            //Restart timer
-            TimeRemaining = SpawnDelay;
-            return true;
+                //Restart timer
+                TimeRemaining = SpawnDelay;
+                return true;
             }
         }
 
@@ -121,10 +122,14 @@ public class SpawnManager : MonoBehaviour
     {
         if (AvailablePosForSpawn != null)
         {
-            for (int i = 0; i < AvailablePosForSpawn[0].Count; i++)
+            for (int i = 0; i < AvailablePosForSpawn.Count; i++)
             {
-                Gizmos.DrawSphere(AvailablePosForSpawn[0][i], 1);
+                for (int k = 0; k < AvailablePosForSpawn[i].Count; k++)
+                {
+                    Gizmos.DrawSphere(AvailablePosForSpawn[i][k], 1);
+                }
             }
         }
+
     }
 }
