@@ -46,6 +46,8 @@ public class Player : MonoBehaviour
 
     private float StartGameObjectZ; //Start pos of Z coordinate
 
+    [SerializeField] private StatsStorage statsStorage;
+
     void Start()
     {
         FieldPos = FieldOfFixationShoot.transform.localPosition;
@@ -61,6 +63,8 @@ public class Player : MonoBehaviour
 
         PistolFire = Pistol.transform.GetChild(0).gameObject;
         RifleFire = Rifle.transform.GetChild(0).gameObject;
+
+        statsStorage.LoadGame();
     }
 
     void Update()
@@ -125,7 +129,6 @@ public class Player : MonoBehaviour
         if (IsFire)
         {
             FireElapsed -= Time.deltaTime;
-            print(FireElapsed);
             if (FireElapsed <= 0)
             {
                 FireElapsed = 0.1f;
@@ -291,5 +294,8 @@ public class Player : MonoBehaviour
     {
         ScoreTextOnLoseMenu.text = "Your score:" + Score;
         LoseMenu.SetActive(true);
+
+        statsStorage.SaveGame(Score);
+        statsStorage.LoadGame();
     }
 }

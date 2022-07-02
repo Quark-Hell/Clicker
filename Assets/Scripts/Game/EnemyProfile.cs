@@ -71,7 +71,7 @@ public class EnemyProfile : MonoBehaviour
 
     public void BeHit(float damage)
     {
-        currentHP -= damage;
+        CurrentHP -= damage;
     }
 
     private float elapsed = 0;
