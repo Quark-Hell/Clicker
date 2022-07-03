@@ -67,6 +67,8 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        Application.targetFrameRate = 60;
+
         FieldPos = FieldOfFixationShoot.transform.localPosition;
         FieldWidth = FieldOfFixationShoot.GetComponent<RectTransform>().rect.width;
         FieldHeight = FieldOfFixationShoot.GetComponent<RectTransform>().rect.height;
@@ -83,7 +85,6 @@ public class Player : MonoBehaviour
 
         ElapsedHaveRifle = TimeHaveRifle;
 
-        ElapsedBetweenShootsForPistol = DelayBetweenShootsForPistol;
         ElapsedBetweenShootsForRifle = DelayBetweenShootsForRifle;
 
         CurrentRecoilStrong = PistolRecoilStrong;
@@ -188,9 +189,6 @@ public class Player : MonoBehaviour
 
     [Header("Shoot delay")]
     [Range(0, 1)]
-    [SerializeField] private float DelayBetweenShootsForPistol;
-    private float ElapsedBetweenShootsForPistol;
-    [Range(0, 1)]
     [SerializeField] private float DelayBetweenShootsForRifle;
     private float ElapsedBetweenShootsForRifle;
 
@@ -199,29 +197,20 @@ public class Player : MonoBehaviour
     {
         if (HavePistol)
         {
-            if (ElapsedBetweenShootsForPistol > 0 && ReadyToShoot == false)
-            {
-                ElapsedBetweenShootsForPistol -= Time.deltaTime;
-            }
-            else
-            {
-                ReadyToShoot = true;
-                ElapsedBetweenShootsForPistol = DelayBetweenShootsForPistol;
-                CheckTouchCountForShoot(touchPos);
+            CheckTouchCountForShoot(touchPos);
 
-                #region UNITY EDITOR
+            #region UNITY EDITOR
 #if UNITY_EDITOR
-                if (Input.GetMouseButtonDown(0))
-                {
-                    Shoot(touchPos);
-                }
-                if (Input.GetMouseButton(0) && HavePistol == false)
-                {
-                    Shoot(touchPos);
-                }
-#endif
-                #endregion
+            if (Input.GetMouseButtonDown(0))
+            {
+                Shoot(touchPos);
             }
+            if (Input.GetMouseButton(0) && HavePistol == false)
+            {
+                Shoot(touchPos);
+            }
+#endif
+            #endregion
         }
         else
         {
@@ -381,14 +370,15 @@ public class Player : MonoBehaviour
     public void Moving()
     {
         float side = -Input.acceleration.x;
-        if (side > 0.1f || side < -0.1f)
+        if (side > 0.15f || side < -0.15f)
         {
             float increasePos = gameObject.transform.position.z + SpeedOfMoving * side * Time.deltaTime;
             if (increasePos < StartGameObjectZ + MaxDistanceFromCenter && increasePos > StartGameObjectZ - MaxDistanceFromCenter)
             {
-                gameObject.transform.position = new Vector3(gameObject.transform.position.x,
-                                             gameObject.transform.position.y,
-                                             increasePos);
+                gameObject.transform.position = new Vector3(
+                    gameObject.transform.position.x, 
+                    gameObject.transform.position.y, 
+                    increasePos);
 
                 RotateCamera(side);
             }
