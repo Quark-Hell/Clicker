@@ -185,15 +185,16 @@ public class Player : MonoBehaviour
 
     bool IsTouch(out Vector2 touchPos)
     {
-#if UNITY_EDITOR
-        touchPos = Input.mousePosition;
-        return true;
-#endif
         if (Input.touchCount > 0)
         {
             touchPos = Input.GetTouch(0).position;
             return true;
         }
+#if UNITY_EDITOR
+        touchPos = Input.mousePosition;
+        return true;
+#endif
+        touchPos = Vector2.zero;
         return false;
     }
 
