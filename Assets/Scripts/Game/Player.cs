@@ -192,7 +192,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float DelayBetweenShootsForRifle;
     private float ElapsedBetweenShootsForRifle;
 
-    private bool ReadyToShoot;
     void TouchOnScreenForShoot(Vector2 touchPos)
     {
         if (HavePistol)
@@ -214,14 +213,13 @@ public class Player : MonoBehaviour
         }
         else
         {
-            if (ElapsedBetweenShootsForRifle > 0 && ReadyToShoot == false)
+            if (ElapsedBetweenShootsForRifle > 0)
             {
                 ElapsedBetweenShootsForRifle -= Time.deltaTime;
             }
             else
             {
                 ElapsedBetweenShootsForRifle = DelayBetweenShootsForRifle;
-                ReadyToShoot = true;
                 CheckTouchCountForShoot(touchPos);
 
                 #region UNITY EDITOR
@@ -248,13 +246,11 @@ public class Player : MonoBehaviour
             if (Input.GetTouch(i).phase == TouchPhase.Began)
             {
                 Shoot(touchPos);
-                ReadyToShoot = false;
                 break;
             }
             else if (HavePistol == false)
             {
                 Shoot(touchPos);
-                ReadyToShoot = false;
                 break;
             }
         }
