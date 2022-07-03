@@ -69,10 +69,6 @@ public class Player : MonoBehaviour
     {
         Application.targetFrameRate = 60;
 
-        FieldPos = FieldOfFixationShoot.transform.localPosition;
-        FieldWidth = FieldOfFixationShoot.GetComponent<RectTransform>().rect.width;
-        FieldHeight = FieldOfFixationShoot.GetComponent<RectTransform>().rect.height;
-
         ScoreText.text = "Score: " + Score;
 
         StartGameObjectZ = transform.position.z;
@@ -98,12 +94,12 @@ public class Player : MonoBehaviour
         {
             StartGameEffect();
         }
-        Vector2 touchPos;
         if (IsLose == false)
         {
-            Moving();
-            if (AboveField(out touchPos))
+            Vector2 touchPos;
+            if (IsTouch(out touchPos))
             {
+                Moving();
                 AimGun(touchPos);
                 TouchOnScreenForShoot(touchPos);
             }
@@ -185,6 +181,20 @@ public class Player : MonoBehaviour
                 }
             }
         }
+    }
+
+    bool IsTouch(out Vector2 touchPos)
+    {
+#if UNITY_EDITOR
+        touchPos = Input.mousePosition;
+        return true;
+#endif
+        if (Input.touchCount > 0)
+        {
+            touchPos = Input.GetTouch(0).position;
+            return true;
+        }
+        return false;
     }
 
     [Header("Shoot delay")]
@@ -301,50 +311,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    #region Fields for AboveField
-    Plane plane = new Plane(Vector3.up, 0);
-    private Vector3 FieldPos;
-    private float FieldWidth;
-    private float FieldHeight;
-    #endregion
-    bool AboveField(out Vector2 touchPos)
-    {
-        Vector2 ViewportTouchPos;
-
-        for (byte i = 0; i < Input.touchCount; i++)
-        {
-           ViewportTouchPos = Camera.main.ScreenToViewportPoint(Input.GetTouch(i).position);
-
-            ViewportTouchPos.x *= Screen.width;
-            ViewportTouchPos.y *= Screen.height;
-
-            if (ViewportTouchPos.x <= Screen.width - (Screen.width - FieldWidth - FieldPos.x * 2) && ViewportTouchPos.x >= Screen.width - FieldWidth)
-            {
-                if (ViewportTouchPos.y <= Screen.height - (Screen.height - FieldHeight - FieldPos.y * 2) && ViewportTouchPos.y >= Screen.height - FieldHeight)
-                {
-                    touchPos = ViewportTouchPos;
-                    return true;
-                }
-            }
-        }
-#if UNITY_EDITOR
-        ViewportTouchPos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-
-        ViewportTouchPos.x *= Screen.width;
-        ViewportTouchPos.y *= Screen.height;
-
-        if (ViewportTouchPos.x <= Screen.width - (Screen.width - FieldWidth - FieldPos.x * 2) && ViewportTouchPos.x >= Screen.width - FieldWidth)
-        {
-            if (ViewportTouchPos.y <= Screen.height - (Screen.height - FieldHeight - FieldPos.y * 2) && ViewportTouchPos.y >= Screen.height - FieldHeight)
-            {
-                touchPos = ViewportTouchPos;
-                return true;
-            }
-        }
-#endif
-        touchPos = Vector2.zero;
-        return false;
-    }
     void AimGun(Vector2 mousePos)
     {
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
