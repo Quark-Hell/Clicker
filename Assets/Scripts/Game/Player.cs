@@ -6,7 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [Header("Speed parameters")]
-    [Range(0, 10)]
+    [Range(0, 20)]
     public float SpeedOfMoving;
     [Range(0, 10)]
     public float SpeedOfRotate;
@@ -75,7 +75,7 @@ public class Player : MonoBehaviour
 
         StartGameObjectZ = transform.position.z;
 
-        Timer = spawnManager.StartSpawnDelay;
+        Timer = spawnManager.DelayBeforeStartGame;
         DelayText.text = "" + Timer;
 
         PistolFire = Pistol.transform.GetChild(0).gameObject;
@@ -83,7 +83,8 @@ public class Player : MonoBehaviour
 
         ElapsedHaveRifle = TimeHaveRifle;
 
-        ElapsedBetweenShoots = DelayBetweenShoots;
+        ElapsedBetweenShootsForPistol = DelayBetweenShootsForPistol;
+        ElapsedBetweenShootsForRifle = DelayBetweenShootsForRifle;
 
         CurrentRecoilStrong = PistolRecoilStrong;
 
@@ -97,10 +98,14 @@ public class Player : MonoBehaviour
             StartGameEffect();
         }
         Vector2 touchPos;
-        if (AboveField(out touchPos) && IsLose == false)
+        if (IsLose == false)
         {
-            AimGun(touchPos);
-            TouchOnScreenForShoot(touchPos);
+            Moving();
+            if (AboveField(out touchPos))
+            {
+                AimGun(touchPos);
+                TouchOnScreenForShoot(touchPos);
+            }
         }
         //Just effect of fire
         FireFading();
@@ -108,6 +113,7 @@ public class Player : MonoBehaviour
         {
             HaveRifleTimer();
         }
+
 #if UNITY_EDITOR
         TestBooster();
 #endif
@@ -180,45 +186,88 @@ public class Player : MonoBehaviour
         }
     }
 
-    [Header("")]
+    [Header("Shoot delay")]
     [Range(0, 1)]
-    [SerializeField] private float DelayBetweenShoots;
-    private float ElapsedBetweenShoots;
+    [SerializeField] private float DelayBetweenShootsForPistol;
+    private float ElapsedBetweenShootsForPistol;
+    [Range(0, 1)]
+    [SerializeField] private float DelayBetweenShootsForRifle;
+    private float ElapsedBetweenShootsForRifle;
+
+    private bool ReadyToShoot;
     void TouchOnScreenForShoot(Vector2 touchPos)
     {
-        if (ElapsedBetweenShoots > 0 && HavePistol == false)
+        if (HavePistol)
         {
-            ElapsedBetweenShoots -= Time.deltaTime;
+            if (ElapsedBetweenShootsForPistol > 0 && ReadyToShoot == false)
+            {
+                ElapsedBetweenShootsForPistol -= Time.deltaTime;
+            }
+            else
+            {
+                ReadyToShoot = true;
+                ElapsedBetweenShootsForPistol = DelayBetweenShootsForPistol;
+                CheckTouchCountForShoot(touchPos);
+
+                #region UNITY EDITOR
+#if UNITY_EDITOR
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Shoot(touchPos);
+                }
+                if (Input.GetMouseButton(0) && HavePistol == false)
+                {
+                    Shoot(touchPos);
+                }
+#endif
+                #endregion
+            }
         }
         else
         {
-            ElapsedBetweenShoots = DelayBetweenShoots;
-            //If began so shoot
-            for (byte i = 0; i < Input.touchCount; i ++)
+            if (ElapsedBetweenShootsForRifle > 0 && ReadyToShoot == false)
             {
-                if (Input.GetTouch(i).phase == TouchPhase.Began)
-                {
-
-                    Shoot(touchPos);
-                    break;
-                }
-                else if (HavePistol == false)
-                {
-                    Shoot(touchPos);
-                    break;
-                }
+                ElapsedBetweenShootsForRifle -= Time.deltaTime;
             }
+            else
+            {
+                ElapsedBetweenShootsForRifle = DelayBetweenShootsForRifle;
+                ReadyToShoot = true;
+                CheckTouchCountForShoot(touchPos);
 
+                #region UNITY EDITOR
 #if UNITY_EDITOR
-            if (Input.GetMouseButtonDown(0))
-            {
-                Shoot(touchPos);
-            }
-            if (Input.GetMouseButton(0) && HavePistol == false)
-            {
-                Shoot(touchPos);
-            }
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Shoot(touchPos);
+                }
+                if (Input.GetMouseButton(0) && HavePistol == false)
+                {
+                    Shoot(touchPos);
+                }
 #endif
+                #endregion
+            }
+        }
+    }
+
+    void CheckTouchCountForShoot(Vector2 touchPos)
+    {
+        //If began so shoot
+        for (byte i = 0; i < Input.touchCount; i++)
+        {
+            if (Input.GetTouch(i).phase == TouchPhase.Began)
+            {
+                Shoot(touchPos);
+                ReadyToShoot = false;
+                break;
+            }
+            else if (HavePistol == false)
+            {
+                Shoot(touchPos);
+                ReadyToShoot = false;
+                break;
+            }
         }
     }
 
@@ -329,24 +378,27 @@ public class Player : MonoBehaviour
         }
     }
 
-    //Calling in MovingPlayerButton
-    public void Moving(float Side)
+    public void Moving()
     {
-        float increasePos = gameObject.transform.position.z + SpeedOfMoving * Side * Time.deltaTime;
-        if (increasePos < StartGameObjectZ + MaxDistanceFromCenter && increasePos > StartGameObjectZ - MaxDistanceFromCenter)
+        float side = -Input.acceleration.x;
+        if (side > 0.1f || side < -0.1f)
         {
-            gameObject.transform.position = new Vector3(gameObject.transform.position.x,
-                                         gameObject.transform.position.y,
-                                         increasePos);
+            float increasePos = gameObject.transform.position.z + SpeedOfMoving * side * Time.deltaTime;
+            if (increasePos < StartGameObjectZ + MaxDistanceFromCenter && increasePos > StartGameObjectZ - MaxDistanceFromCenter)
+            {
+                gameObject.transform.position = new Vector3(gameObject.transform.position.x,
+                                             gameObject.transform.position.y,
+                                             increasePos);
 
-            RotateCamera(Side);
+                RotateCamera(side);
+            }
         }
     }
 
     //Rotate doing only if player moving
-    void RotateCamera(float Side)
+    void RotateCamera(float side)
     {
-        transform.eulerAngles = new Vector3(16, transform.eulerAngles.y + SpeedOfRotate * Side * Time.deltaTime, 0);
+        transform.eulerAngles = new Vector3(16, transform.eulerAngles.y + SpeedOfRotate * side * Time.deltaTime, 0);
     }
 
     public void GetRifle()

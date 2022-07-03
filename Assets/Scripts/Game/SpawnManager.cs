@@ -9,18 +9,19 @@ public class SpawnManager : MonoBehaviour
     public float IncreaseDifficulty = 1;
 
     [Range(0, 10)]
+    public float DelayBeforeStartGame;
+    [Range(0, 10)]
     public float StartSpawnDelay;
-    public float SpawnDelay
+    public float CurrentSpawnDelay
     {
         set
         {
-            if (value < 0.4) { spawnDelay = 0.4f; }
-            else { spawnDelay = value; }
+            if (value < 0.4) { currentSpawnDelay = 0.4f; }
+            else { currentSpawnDelay = value; }
         }
-        get { return spawnDelay; }
+        get { return currentSpawnDelay; }
     }
-    private float spawnDelay;
-    private float TimeRemaining;
+    private float currentSpawnDelay;
 
     public Player player;
 
@@ -55,12 +56,12 @@ public class SpawnManager : MonoBehaviour
             }
         }
 
-        spawnDelay = StartSpawnDelay;
+        CurrentSpawnDelay = StartSpawnDelay;
 
         CurrentTimeForUnfreezy = TimeForUnfreezy;
 
         //Initialize timer
-        TimeRemaining = StartSpawnDelay;
+        TimeRemaining = DelayBeforeStartGame;
     }
 
     void Update()
@@ -85,9 +86,9 @@ public class SpawnManager : MonoBehaviour
     void IncreaseDifficult()
     {
         Difficulty += IncreaseDifficulty / 10 * Time.deltaTime;
-        if (SpawnDelay - Difficulty / 50 * Time.deltaTime >= 0)
+        if (CurrentSpawnDelay - Difficulty / 50 * Time.deltaTime >= 0)
         {
-            SpawnDelay -= Difficulty / 50 * Time.deltaTime;
+            CurrentSpawnDelay -= Difficulty / 50 * Time.deltaTime;
         }
     }
 
@@ -108,6 +109,7 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+    private float TimeRemaining;
     bool SpawnEnemy()
     {
         //timer
@@ -140,6 +142,8 @@ public class SpawnManager : MonoBehaviour
                     obj.GetComponent<EnemyProfile>().MaxHP *= Difficulty;
                     obj.GetComponent<EnemyProfile>().enabled = true;
 
+                    player.Damage += Difficulty * 2;
+
                     Enemy.Add(obj.gameObject);
 
                     //Deleting point from list of available for spawning
@@ -148,7 +152,7 @@ public class SpawnManager : MonoBehaviour
                 #endregion
 
                 //Restart timer
-                TimeRemaining = SpawnDelay;
+                TimeRemaining = CurrentSpawnDelay;
                 return true;
             }
         }
