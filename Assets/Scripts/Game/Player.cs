@@ -96,10 +96,11 @@ public class Player : MonoBehaviour
         }
         if (IsLose == false)
         {
+            Moving();
+
             Vector2 touchPos;
             if (IsTouch(out touchPos))
             {
-                Moving();
                 AimGun(touchPos);
                 TouchOnScreenForShoot(touchPos);
             }

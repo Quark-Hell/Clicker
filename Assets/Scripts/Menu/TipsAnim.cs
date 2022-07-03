@@ -8,12 +8,10 @@ public class TipsAnim : MonoBehaviour
     [SerializeField]
     private List<string> TipsList;
 
-    [SerializeField]
     [Range(0, 1)]
-    private float MinSize;
-    [SerializeField]
+    [SerializeField] private float MinSize;
     [Range(1, 2)]
-    private float MaxSize;
+    [SerializeField] private float MaxSize;
 
     [SerializeField]
     [Range(0, 1)]
