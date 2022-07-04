@@ -402,7 +402,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.X))
         {
-            for (int i = spawnManager.Enemy.Count - 1; i > 0; i--)
+            for (int i = spawnManager.Enemy.Count - 1; i >= 0; i--)
             {
                 spawnManager.Enemy[i].GetComponent<EnemyProfile>().DeathWithoutDropBooster();
             }

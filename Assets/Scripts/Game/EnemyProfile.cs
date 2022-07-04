@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
-
-
 public class EnemyProfile : MonoBehaviour
 {
     public float MaxHP;

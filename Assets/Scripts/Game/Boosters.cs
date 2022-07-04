@@ -79,7 +79,7 @@ public class Boosters : MonoBehaviour
     {
         if (typesBooster == TypesBooster.Bomb)
         {
-            for (int i = spawnManager.Enemy.Count - 1; i > 0; i--)
+            for (int i = spawnManager.Enemy.Count - 1; i >= 0; i--)
             {
                 spawnManager.Enemy[i].GetComponent<EnemyProfile>().DeathWithoutDropBooster();
             }

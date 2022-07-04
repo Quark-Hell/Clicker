@@ -1521,7 +1521,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2561411612962153401, guid: c7c876f98b8242949afb876f521bd9fe, type: 3}
       propertyPath: SpeedOfChangingHPBar
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2561411612962153401, guid: c7c876f98b8242949afb876f521bd9fe, type: 3}
       propertyPath: SpeedOfChangingHPbar
@@ -6098,7 +6098,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2561411612962153401, guid: 72ae8c7be6af5b64d8cb140f18625e00, type: 3}
       propertyPath: SpeedOfChangingHPBar
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2561411612962153401, guid: 72ae8c7be6af5b64d8cb140f18625e00, type: 3}
       propertyPath: SpeedOfChangingHPbar
