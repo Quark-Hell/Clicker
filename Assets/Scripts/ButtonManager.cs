@@ -44,10 +44,7 @@ public class ButtonManager : MonoBehaviour
             SceneManager.LoadScene("Game");
         }
 #if UNITY_EDITOR
-        if (Input.touchCount == 1)
-        {
-            SceneManager.LoadScene("Game");
-        }
+        SceneManager.LoadScene("Game");
 #endif
     }
 
@@ -152,10 +149,7 @@ public class ButtonManager : MonoBehaviour
             Application.Quit();
         }
 #if UNITY_EDITOR
-        if (Input.touchCount == 1)
-        {
-            Application.Quit();
-        }
+        Application.Quit();
 #endif
     }
 
@@ -166,10 +160,7 @@ public class ButtonManager : MonoBehaviour
             SceneManager.LoadScene("Menu");
         }
 #if UNITY_EDITOR
-        if (Input.touchCount == 1)
-        {
-            SceneManager.LoadScene("Menu");
-        }
+        SceneManager.LoadScene("Menu");
 #endif
     }
     public void Restart()
@@ -179,10 +170,7 @@ public class ButtonManager : MonoBehaviour
             SceneManager.LoadScene("Game");
         }
 #if UNITY_EDITOR
-        if (Input.touchCount == 1)
-        {
-            SceneManager.LoadScene("Game");
-        }
+        SceneManager.LoadScene("Game");
 #endif
     }
 
